@@ -31,6 +31,13 @@
 	</properties>
 	<dependencies>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+ 
+
+
         <!-- JPA API,  Hibernate, Spring ORM / transaction -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

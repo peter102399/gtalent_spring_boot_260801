@@ -1,5 +1,6 @@
 package student.gtalent_spring_boot_260801;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
