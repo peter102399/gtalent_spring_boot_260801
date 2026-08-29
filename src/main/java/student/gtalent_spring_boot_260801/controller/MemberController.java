@@ -22,7 +22,7 @@ import student.gtalent_spring_boot_260801.service.MemberService;
 
 import student.gtalent_spring_boot_260801.request.MemberLoginRequest;
 import student.gtalent_spring_boot_260801.request.TokenLogoutRequest;
-import student.gtalent_spring_boot_260801.request.TokenRefreshRequest;
+
 
 @RestController
 @RequestMapping("/members")
@@ -74,16 +74,10 @@ public class MemberController {
         return new ApiResponse("會員帳號刪除成功");
     }
 
-    @PostMapping("/login")
+     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse login(@Valid @RequestBody MemberLoginRequest request) {
         return memberService.login(request);
-    }
-
-    @PostMapping("/refresh")
-    @ResponseStatus(HttpStatus.OK)
-    public TokenResponse refresh(@Valid @RequestBody TokenRefreshRequest request) {
-        return memberService.refresh(request.getRefreshToken());
     }
 
     @PostMapping("/logout")
