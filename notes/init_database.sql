@@ -4,7 +4,7 @@ CREATE DATABASE project26_v1
 CREATE DATABASE project26_v1_test
     DEFAULT CHARACTER SET = 'utf8mb4';
 
-CREATE USER 'project26_v1'@'%' IDENTIFIED BY '{your password}';
+CREATE USER 'project26_v1'@'%' IDENTIFIED BY 'peter102399';
 -- Grant select privilege to all databases;
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX
     ON project26_v1.*

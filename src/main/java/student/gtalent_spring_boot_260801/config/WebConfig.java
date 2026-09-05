@@ -15,7 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
         this.authInterceptor = authInterceptor;
     }
 
- 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // members / books 需要登入的 API 統一先經過 AuthInterceptor 檢查 token。
@@ -29,7 +28,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/members/register",
                         "/members/login",
-                        "/members/logout"
+                        "/members/logout",
+                        "/members/forgot-password",
+                        "/members/reset-password"
                 );
     }
 }
