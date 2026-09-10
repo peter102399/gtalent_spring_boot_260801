@@ -65,6 +65,15 @@
             background: #ffe3e3;
             color: #9b1c1c;
         }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        .links a { color: #1769aa; }
     </style>
 </head>
 <body>
@@ -80,6 +89,10 @@
         <input id="password" name="password" type="password" required>
 
         <button id="loginButton" type="submit">登入</button>
+        <div class="links">
+            <a href="/page/register">註冊新會員</a>
+            <a href="/page/forgot-password">忘記密碼？</a>
+        </div>
     </form>
 </main>
 
