@@ -1,0 +1,331 @@
+-- MySQL dump 10.13  Distrib 8.0.46, for Win64 (x86_64)
+--
+-- Host: localhost    Database: project26_v1
+-- ------------------------------------------------------
+-- Server version	8.0.46
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `auth_tokens`
+--
+
+DROP TABLE IF EXISTS `auth_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auth_tokens` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `owner_type` varchar(32) NOT NULL,
+  `owner_id` bigint NOT NULL,
+  `access_token_hash` varchar(64) NOT NULL,
+  `refresh_token_hash` varchar(64) NOT NULL,
+  `access_expires_at` datetime NOT NULL,
+  `refresh_expires_at` datetime NOT NULL,
+  `revoked` tinyint NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_auth_tokens_access_token_hash` (`access_token_hash`),
+  UNIQUE KEY `uk_auth_tokens_refresh_token_hash` (`refresh_token_hash`),
+  KEY `idx_auth_tokens_owner` (`owner_type`,`owner_id`),
+  KEY `idx_auth_tokens_refresh_expired` (`refresh_expires_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `auth_tokens`
+--
+
+LOCK TABLES `auth_tokens` WRITE;
+/*!40000 ALTER TABLE `auth_tokens` DISABLE KEYS */;
+INSERT INTO `auth_tokens` VALUES (1,'MEMBER',6,'a5e662b752277202447d82311353982cc09d1940250f5d5aa1aa9b68652483e5','1b32bce2e858ae59d9a03e40382ad1904dc77812fba798f27218fc1ef3b3b575','2026-08-25 17:36:33','2026-09-01 17:21:33',0,'2026-08-25 17:21:33','2026-08-25 17:21:33',NULL),(2,'MEMBER',5,'b3e3d61871ef1414b67afbea67e4c437250eabaa78b79c2e34a27fcd39c8eb6a','1c51c4d96e8e906307f9595fc0dff2d3215c7d8b8bad7300edbb6b903d144ea6','2026-08-25 20:01:19','2026-09-01 19:46:19',0,'2026-08-25 19:46:20','2026-08-25 19:46:20',NULL),(3,'MEMBER',5,'367c95d25ebfcd2166f0b9a4b6e78b7959c535f6cdb6cf94a12a0f5a29f7c13c','0f0422db55af271a9fa96c4b0fbc8aa0adfa167c143616c18a8820af0f66808f','2026-08-25 20:08:17','2026-09-01 19:53:17',0,'2026-08-25 19:53:17','2026-08-25 19:53:17',NULL),(4,'MEMBER',5,'5a786085cc1bb599e1e506f9a3f986e10a96c675e7ea157d272cb60d6d630db7','bc6b2b34ad5a120352869427d4f91be139cae5d2d535b09faad790e1355a99d7','2026-08-25 20:53:24','2026-09-01 20:38:24',0,'2026-08-25 20:38:25','2026-08-25 20:38:25',NULL),(5,'MEMBER',5,'cfe463527377c1e4b3ea55388a29ad7253bcc8d419b5910da27c7fa857c4beec','8c0633fa4f59b1e81a43dabbfd59c23e1db47fc3e17bdc5223102ed6476e81dd','2026-08-25 20:57:58','2026-09-01 20:42:58',0,'2026-08-25 20:42:58','2026-08-25 20:42:58',NULL),(6,'MEMBER',5,'c6c9f171d301fe149558da6eb9d9c31a812d7dbb2b021ea3d919e28c09d9aaed','18082040c9ba5171de5b0194d8d290689f1fb29cabe412b2ded7aca8b345762b','2026-08-25 21:03:13','2026-09-01 20:48:13',0,'2026-08-25 20:48:13','2026-08-25 20:48:13',NULL),(7,'MEMBER',5,'a170fb9fb23dc47db9981bb42084754b8afda008980f26fa80f1f186be0a7f87','c2bdfcdfb3ad90ecb0eff0fce0f7fb959b5b636145cb631c6cc990d890df69ca','2026-08-25 21:12:01','2026-09-01 20:57:01',0,'2026-08-25 20:57:01','2026-08-25 20:57:01',NULL),(8,'MEMBER',5,'fd4211dc95bdf73bb724658895aed73ea89b8168c05cd91437654f9db7264442','118937c1423a34748e3ae28dd3820bd793ba3dfceea4325493de4a88d913a185','2026-08-25 21:15:00','2026-09-01 21:00:00',0,'2026-08-25 21:00:00','2026-08-25 21:00:00',NULL),(9,'MEMBER',5,'0584d81a798413afad4e3a88d7ef682f903b884cbce2ca07b4f4a10914c786f4','a0ac6ebada4787726df42aa6f736396ab022578fc8618daa28742238ed56900a','2026-08-25 21:17:53','2026-09-01 21:02:53',0,'2026-08-25 21:02:53','2026-08-25 21:02:53',NULL),(10,'MEMBER',5,'1617fcfad941c61e10cd428076eed757198e0a5abba5289d4a84adecd5623e58','9b8d62ac07fcc9673c162b7b62566f6918a515dd9dcbbc3d21547ede271266bb','2026-08-25 21:23:01','2026-09-01 21:08:01',0,'2026-08-25 21:08:01','2026-08-25 21:08:01',NULL),(11,'MEMBER',5,'5b12a731c4f363357585673a460258729b9d7fdba9198852793f0d2793ff4559','6aea6dc554802e305eb2d7c10808724afe944ce49bcc20d619bfd27af29863d9','2026-08-25 21:28:47','2026-09-01 21:13:47',0,'2026-08-25 21:13:47','2026-08-25 21:13:47',NULL),(12,'MEMBER',5,'59b8fd980e97b33973af22cbf3006b25392f322ac6c90ee33d7eda25bfe4102a','0de299532cea5b76dfb6880309b99eb89ccf3cec7b48c9f6185f95af399d415d','2026-08-25 21:42:57','2026-09-01 21:27:57',0,'2026-08-25 21:27:57','2026-08-25 21:27:57',NULL),(13,'MEMBER',5,'aa646cbd16e5a0285fae588c1044b4d01d908805f463c2dcc61f382626ddf1ae','69152977c5f67881968ff1c82184bc88ef872cf9c44937b0d3ba3e1d81027470','2026-08-25 21:44:11','2026-09-01 21:29:11',1,'2026-08-25 21:29:11','2026-08-25 21:34:48','2026-08-25 21:34:48'),(14,'MEMBER',5,'043ff8f0be563e1d47f504729e99eb4d5f3c556234c45eaf726eeea3e433537b','e9648a2c2b88fb1e95e8f298b277bafd84004fe9976a2c028eec190fa94a104f','2026-08-25 21:51:56','2026-09-01 21:36:56',0,'2026-08-25 21:36:56','2026-08-25 21:36:56',NULL),(15,'MEMBER',5,'dbd206301fd4c361b16b46ca9e17511e6d589d4405acef7ac7b6d8925a820c96','7a27b0d436bc96cf8cab0d86138f30587b8565520c98a514787a2f3d38cd31c9','2026-08-25 21:52:34','2026-09-01 21:37:34',0,'2026-08-25 21:37:34','2026-08-25 21:37:34',NULL),(16,'MEMBER',5,'6733ad93394fdc91c3856934b0facf4bb4e858b9cab263d0d34460443bdc3adb','4e57ed1a0c8aafcb702be3542f9e12614587cb191b28f6cf1ee788127ffe3450','2026-08-25 21:53:52','2026-09-01 21:38:52',0,'2026-08-25 21:38:52','2026-08-25 21:38:52',NULL),(17,'MEMBER',5,'cda036a66fcb1a99842c78e4ea756ce73d3572eec7c557413eaf78840494e9a6','9b37eb809ec4f65b386ebb760df404263bb61ed500aac239ab4818b9b87028ea','2026-08-25 21:55:30','2026-09-01 21:40:30',0,'2026-08-25 21:40:30','2026-08-25 21:40:30',NULL),(18,'MEMBER',5,'255e1342f63d8afbea97d58ef0bb5535ba7303bc528ccda04d168c8415b154cc','f6593a0acb229dfab600040932eede625259965cc2bbda05cf49f41c2e52cd04','2026-08-25 21:57:44','2026-09-01 21:42:44',0,'2026-08-25 21:42:44','2026-08-25 21:42:44',NULL),(19,'MEMBER',5,'b122621d36c31136c77d352c14238692326977f3717c4e4e6be3ac2477d3d454','bf73c8f7acb6f5728eedd16a4a2cc591f13397b077784822f60fd01a5ed57e01','2026-08-25 22:01:15','2026-09-01 21:46:15',0,'2026-08-25 21:46:15','2026-08-25 21:46:15',NULL),(20,'MEMBER',5,'fe52a45ce95bd96985d99da7a1c25d91609e23af7974ad49c49a32a6da55eb06','64b98774a3e94494e100b9a3a6aa8262209a8389c69d519af4575c23da879ca1','2026-08-25 22:04:16','2026-09-01 21:49:16',0,'2026-08-25 21:49:16','2026-08-25 21:49:16',NULL),(21,'MEMBER',5,'0551de2a640219c05c47f8fed6e0bfdf39e4dd69b9b1970f371a93491e6a9497','a59c4e5d5d3628e0478a2244881d9911c1f7127f525018d58e91323825837a5a','2026-08-25 22:09:24','2026-09-01 21:54:24',0,'2026-08-25 21:54:24','2026-08-25 21:54:24',NULL),(22,'MEMBER',5,'c7b9f4c50d1b799797879762e0a5a2f7c565ae022bd538c268d59c041335b0b3','b96656ffec1d0686ae0ffb52f5d6cfcca3617121a7338fa807ef13623b8a4c36','2026-08-25 22:11:54','2026-09-01 21:56:54',1,'2026-08-25 21:56:54','2026-08-25 21:57:01','2026-08-25 21:57:01'),(23,'MEMBER',5,'0281c0bb9d1bd906d65a8ed62b35c5df7dc48ecabc73680575cc3b97843dbc1c','cbbdf76ce3bf9cd8a394220b350d37e204c87f46dd556f252a846be897b5f272','2026-08-25 22:14:11','2026-09-01 21:59:11',1,'2026-08-25 21:59:11','2026-08-25 21:59:52','2026-08-25 21:59:52'),(24,'MEMBER',5,'74c9ddd04dcf5700dec09a86887a1061fc2353c621ed8da3c57116024df8a89e','e373b863a20b23c8edddc4020bdd2f666caaf84da03e81388b898390bd8e9570','2026-08-25 22:15:29','2026-09-01 22:00:29',0,'2026-08-25 22:00:29','2026-08-25 22:00:29',NULL),(25,'MEMBER',5,'ad834c9662559a5e827966cd778281f1b3a573808522cdfba67b76cb48eafaf0','0a33937e9db4882eb5829d6780f855ab8434e458d49a6d0e2b7a17f366b40585','2026-08-25 22:22:16','2026-09-01 22:07:16',0,'2026-08-25 22:07:16','2026-08-25 22:07:16',NULL),(26,'MEMBER',5,'f5b5a5bbb736a29c61048621a2514e0ac0f9d24f4500bb5ad73e0df56e8f9805','f26b2b813d687c76262a73d73378c06b004621d6b6e650b3564a097790135727','2026-08-25 22:26:52','2026-09-01 22:11:52',0,'2026-08-25 22:11:52','2026-08-25 22:11:52',NULL),(27,'MEMBER',5,'b43f566d0c6f2107a17b5ba2c3a0473244c6a32004b175a4ceaac160bc00fafc','0b5a8a0f50ce0d6f0ffb890035793f53be0676f4bea54de9b8a51653c9cc191b','2026-08-28 16:12:17','2026-09-04 15:57:17',1,'2026-08-28 15:57:17','2026-08-28 15:58:22','2026-08-28 15:58:22'),(28,'MEMBER',5,'5e36717018bbccd5aab554ba5e2e54027d4950b9d6b31c86afbe77235e49ead3','d05cbf40e3e222fe730119fde17549c4c4d28503f2703b93e8a02e8acd212a3a','2026-08-28 16:13:29','2026-09-04 15:58:29',1,'2026-08-28 15:58:29','2026-08-28 15:59:16','2026-08-28 15:59:16'),(29,'MEMBER',5,'a58239bf01e9d915f9a2d24be2686b9ce2abcb487de69e60acfd3dc0b7c74d71','d1d7ef739069f54d8a28b65a478d0bbce06ca4db8a60875bda177ba197c7d863','2026-08-28 16:14:56','2026-09-04 15:59:56',0,'2026-08-28 15:59:56','2026-08-28 15:59:56',NULL),(30,'MEMBER',5,'27a36aa49d008769a5c81b7f187df6baaa2d5e88d687909d050de44399b3a611','713b558594f707d49d4b6d09d86eec9f62b9cd6b3b00108f0ce3f5b8e3433dbf','2026-08-28 16:29:33','2026-09-04 16:14:33',0,'2026-08-28 16:14:33','2026-08-28 16:14:33',NULL),(31,'MEMBER',5,'293d642d4374128ba477cd8f2719407501bdb61bd118728583c9f00b6740b48a','887d0492b40cdd67c599d138c1d64dba8f8f87ac26ef1d8dc949c019528e626f','2026-08-28 16:33:14','2026-09-04 16:18:14',1,'2026-08-28 16:18:14','2026-08-28 16:20:22','2026-08-28 16:20:22'),(32,'MEMBER',5,'1b69ddbbf0cc1bcd5c112fd0dd575a0e5d5ef42ff9dde36d08920dbbaa4c1b33','29057a873c0aa03fcc339b5d8e7d2e631fcaa8e4e168df9b5769ce0fdccae510','2026-08-28 16:35:43','2026-09-04 16:20:43',0,'2026-08-28 16:20:43','2026-08-28 16:20:43',NULL),(33,'MEMBER',5,'c8e3dd366103d0cbf5d72fe9195f4bca59544600c974a77d9312b80eb9297019','103702d90d4e379345a5dd59be80f91ba603751a2bc49d985b3bd52fe073046c','2026-08-28 16:45:18','2026-09-04 16:30:18',1,'2026-08-28 16:30:18','2026-08-28 16:31:00','2026-08-28 16:31:00'),(34,'MEMBER',5,'64f0b934d438bac4b8c38300e60ee86e71a820d5e94c57f716d1289745cbe953','7c29bbedee05464c3f517f3857bd2f1a710a25d2f824d9ff5f51ef090aaca67c','2026-08-28 16:46:05','2026-09-04 16:31:05',0,'2026-08-28 16:31:05','2026-08-28 16:31:05',NULL),(35,'MEMBER',5,'fe493b27818f5b15f3e26d9e49e9fec41c334cc47191c3b0ed37ac4dc6a13521','70cbac3bb8251a35cdf0afe3b13192d871125719149d31be6c79b4b41d1d2e5c','2026-08-28 17:19:16','2026-09-04 17:04:16',0,'2026-08-28 17:04:16','2026-08-28 17:04:16',NULL),(36,'MEMBER',5,'2950d1183c1e7df8b8d8aa956170e2e6ef7067f4ffc6d6c54145b83323676143','b6aff393efd785d686131f4c83ff2eee857026769f47c4ee6fe0a9f94a4ec8ec','2026-08-28 17:28:33','2026-09-04 17:13:33',1,'2026-08-28 17:13:33','2026-08-28 19:07:44','2026-08-28 19:07:44'),(37,'MEMBER',5,'5bb7a2361cc0452ebf842d84b5f7ee7fa69b69d5eba4c55893bb1a494f95928b','7c6802e4946087e33e67defed0a5de8f6a44c22d4eaa2e333626ca620c739b88','2026-08-28 19:22:44','2026-09-04 19:07:44',0,'2026-08-28 19:07:44','2026-08-28 19:07:44',NULL),(38,'MEMBER',5,'361d240f45395a8b6d4345b60e4aad590cd879eb0f08a13e24aa1dd808edb2c7','213624275c3ebbf60b52c8d90291ee155cacf84721d6786e94e644a3a198cfec','2026-08-28 20:01:03','2026-09-04 19:46:03',0,'2026-08-28 19:46:03','2026-08-28 19:46:03',NULL),(39,'MEMBER',5,'e04dbe5a3ea3e14d127d31f2d44eb947bb28fd936d6ce38fc0e90513722ae948','7a3309794f3771577af414ed6b01a4203a12cbcf79cd4deba1196951f9925181','2026-08-28 20:26:52','2026-09-04 20:11:52',0,'2026-08-28 20:11:52','2026-08-28 20:11:52',NULL),(40,'MEMBER',5,'6fc56a3605a99b7db5aee2be6e02fbb4e84def2ef76a96f5d2d493d4db00696f','3c40d20e357a84c65907df6605026f03a7a06cfbf278d79cc72ad6aeb2053cfe','2026-09-10 12:28:20','2026-09-17 12:13:20',0,'2026-09-10 12:13:20','2026-09-10 12:13:20',NULL),(41,'MEMBER',5,'8a39444342089a31008488b458804804cbc5b098327de8a78d8e5c310913c3d2','7c36ca8d1e54cd754bd155d825f08f317ad8148461786d3a36bf077f0495ecd6','2026-09-10 12:28:50','2026-09-17 12:13:50',0,'2026-09-10 12:13:50','2026-09-10 12:13:50',NULL),(42,'MEMBER',1,'088ea257630273e10016b919a8a3fee09c42ab27930454d05387a076c5ad3d47','e226a32e9ede806ebbdce1ea1bcbaa697a67dd09585dd48883e62088ff866c06','2026-09-10 19:03:02','2026-09-17 18:48:02',0,'2026-09-10 18:48:02','2026-09-10 18:48:02',NULL),(43,'MEMBER',1,'1f3293845fe8004375a214cc9269863feee74a4d6d0320824cdc9d4c44bb5fde','aa02090ff041d7abbb37bd0bfcb87e71f6f76939796d841bdf804ad85b187097','2026-09-10 19:05:04','2026-09-17 18:50:04',0,'2026-09-10 18:50:04','2026-09-10 18:50:04',NULL),(44,'MEMBER',5,'050d900bcce537f5a7237955e8b1f3a21001d549999b21280c4a736b66c8d0d1','a4f41d7aeacc6511754a5b4d05daba1612a6cf707b0e7a99f32f4722e8d67677','2026-09-17 22:38:45','2026-09-24 22:23:45',1,'2026-09-17 22:23:45','2026-09-21 12:38:50','2026-09-21 12:38:50'),(45,'MEMBER',5,'1755a9b06059cdd59f06ba39724134dad7866d328e5c2af05f73a80f14c2e108','abef0c9896c1ded01588e000ffe2449cc72d25d9c1d42856bd6bf02d798a3fbb','2026-09-21 12:53:50','2026-09-28 12:38:50',0,'2026-09-21 12:38:50','2026-09-21 12:38:50',NULL),(46,'MEMBER',5,'e4ff32323013538b9488b6bdba31619ee2b967439e6a0b0e3844f213048d5f36','c13f38d465e8488a51a77c951e510abdf54928511b44128a049c1e6efe4b7320','2026-09-21 12:54:01','2026-09-28 12:39:01',0,'2026-09-21 12:39:01','2026-09-21 12:39:01',NULL),(47,'MEMBER',5,'eb515d08ada9b2b1cd7095f3ff2878661ec8dc5123165f00b74ae02dceed1acd','c6a8d42bbbc4214696e6899100804fa7a6a7eab5ccc725814839b4f80e6588e4','2026-09-21 15:29:18','2026-09-28 15:14:18',0,'2026-09-21 15:14:18','2026-09-21 15:14:18',NULL),(48,'MEMBER',5,'dec839103d6f39790887f2bf8fd788769a001c0bdff6ac359515c11f1488026c','61c89eace630bcf64cf73fe997029d1f9af26e5b4725ec9991ceb04b7ad1fb36','2026-09-21 15:35:55','2026-09-28 15:20:55',0,'2026-09-21 15:20:55','2026-09-21 15:20:55',NULL),(49,'MEMBER',7,'0273201413135cd43250aa67539e696e960e8f7cf972187999e6174b751dc793','2f6647accaaf3f8a0112f64c008c42fdda05e550280faf99fb3a4ce0c1b156b0','2026-09-21 15:57:41','2026-09-28 15:42:41',0,'2026-09-21 15:42:41','2026-09-21 15:42:41',NULL),(50,'MEMBER',7,'bbffaec7c3eaf9ed18259bc486ac71c3aac5d649c8a66164f8fb4ece8adf15db','f254a9f65d16cabc4dbdddb0fb2a482fc013bf082b77ad1510b62b9bac5711c9','2026-09-21 16:00:02','2026-09-28 15:45:02',0,'2026-09-21 15:45:02','2026-09-21 15:45:02',NULL),(51,'MEMBER',7,'988385e2f7dabd9c6134d28a16ea07467781dc7061ffa379c28c309205ae6d43','f1654d7e2a18934c29a8092c1b526491f0722a0f2a793a324d8905566af2d974','2026-09-21 16:00:30','2026-09-28 15:45:30',1,'2026-09-21 15:45:30','2026-09-21 15:45:38','2026-09-21 15:45:38'),(52,'MEMBER',7,'544d7b4a75d25a754fa7d4f4ec2c6a15cea664951d4f5a1310a63138fd1fc337','f5695f417753d9606a1537fd4da0cef1b70b32e57058b9919da78b88c50a472e','2026-09-21 16:00:55','2026-09-28 15:45:55',0,'2026-09-21 15:45:55','2026-09-21 15:45:55',NULL),(53,'MEMBER',7,'0927c1b09dc13c2fc34536b6533f8b41a8ad7a85a06a12df4303fe2de4500b0f','54df99d0ee5c41944ef3f28e34406a687c2deb8f780d2c2b3829ddbd56c56872','2026-09-21 16:02:41','2026-09-28 15:47:41',0,'2026-09-21 15:47:41','2026-09-21 15:47:41',NULL),(54,'MEMBER',7,'730fd28150d4add1e0b8d363d2aeaf85cac0c076524ee44c5a23bc9bcba6efc1','3616b9372258ccee510d2d08e870c4a0207763ef9cecea34c1857d1f28444ec7','2026-09-21 16:03:25','2026-09-28 15:48:25',1,'2026-09-21 15:48:25','2026-09-21 15:48:32','2026-09-21 15:48:32'),(55,'MEMBER',7,'578f482392f9588075b754f2153a641a00be8edd84bea61f1203b4b1645b0cdd','eda4ddc09186e27dc6637de36bb9d3f945cf8076ed5f2f7b8b9107943f4d29a2','2026-09-21 16:03:36','2026-09-28 15:48:36',0,'2026-09-21 15:48:36','2026-09-21 15:48:36',NULL),(56,'MEMBER',7,'6400179461630b9edcb816e606db12e437c0c01ddb6e96e58fc54aa1cc646fbf','d394217b1b4199d0256da74d8bdcedfa7d56125142aeea04addf39bbb9535cc6','2026-09-21 16:04:12','2026-09-28 15:49:12',0,'2026-09-21 15:49:12','2026-09-21 15:49:12',NULL),(57,'MEMBER',7,'ba183b654780e9efd1faf55504fd975482ea51e681e352fd0daaad7e82770f91','43a1e9f49cd9d030a9e3cc6dc81de1a89deb1a7f51d0e5768f33053941aeb854','2026-09-21 16:09:16','2026-09-28 15:54:16',0,'2026-09-21 15:54:16','2026-09-21 15:54:16',NULL),(58,'MEMBER',7,'22bac3d780e953e731a68b3ce12e1f68aee62ee959de9f7f2a3d4a1a9fc21127','e17875d964f79f8562396d176662815c19126a6a33ded163bd15790e2dc3065c','2026-09-21 20:21:14','2026-09-28 20:06:14',0,'2026-09-21 20:06:14','2026-09-21 20:06:14',NULL),(59,'MEMBER',7,'b5a414a768f3c89a3be5e8becabc94d892dfaa35c772bc4ad24a42dcbaa3c936','16a68c07db7e44a65191f47731a2690e92629c36b49915392d35fbcfeac3ae1f','2026-09-21 20:21:16','2026-09-28 20:06:16',0,'2026-09-21 20:06:16','2026-09-21 20:06:16',NULL),(60,'MEMBER',7,'12878721bcd108b758e14296470ed159fa398a28cd586405ea4d69d029191f24','411e171451205cd28fbe4961beb91584ab502e0d279da77985402aa467ce333a','2026-09-21 20:21:50','2026-09-28 20:06:50',0,'2026-09-21 20:06:50','2026-09-21 20:06:50',NULL),(61,'MEMBER',7,'71215a868521511f9dbd96f4d2a942ba10fa5040102e780a2cd329dc47a1d0de','a8c3daa7dc1c167f293fcf4fcfd57312ee367d441b7f9d7bc5ca2365fa99a8f6','2026-09-21 20:29:14','2026-09-28 20:14:14',0,'2026-09-21 20:14:14','2026-09-21 20:14:14',NULL),(62,'MEMBER',7,'d567366a1de280435fa7079006583d1c37de9280a0498d068e2ff15839605b21','e4b2f6abed4bc926ba92ad865216bfc8520815043c9839072823eec224dca17d','2026-09-21 20:29:17','2026-09-28 20:14:17',0,'2026-09-21 20:14:17','2026-09-21 20:14:17',NULL),(63,'MEMBER',7,'a789f8a08b62a24707ea785ed698fc3314de7faca8db29871dbe3f2aafd68a56','0438158e607e4b3a9f6942d31faebe92c5eccfc0632940d7cdf3430184a42962','2026-09-21 21:14:11','2026-09-28 20:59:11',0,'2026-09-21 20:59:11','2026-09-21 20:59:11',NULL);
+/*!40000 ALTER TABLE `auth_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `book1`
+--
+
+DROP TABLE IF EXISTS `book1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `book1` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `price` int DEFAULT '0',
+  `status` smallint DEFAULT '1' COMMENT '狀態 1:存在, 0:刪除',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `book1`
+--
+
+LOCK TABLES `book1` WRITE;
+/*!40000 ALTER TABLE `book1` DISABLE KEYS */;
+/*!40000 ALTER TABLE `book1` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `book_orders`
+--
+
+DROP TABLE IF EXISTS `book_orders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `book_orders` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '訂單流水號',
+  `order_no` varchar(64) NOT NULL COMMENT '系統訂單編號；會對應藍新的 MerchantOrderNo',
+  `book_id` bigint NOT NULL COMMENT '購買的書籍 ID',
+  `buyer_member_id` bigint NOT NULL COMMENT '買家會員 ID',
+  `amount` int NOT NULL COMMENT '訂單金額；建立訂單時固定，避免付款時被書價異動影響',
+  `order_status` varchar(32) NOT NULL DEFAULT 'PENDING_PAYMENT' COMMENT '訂單狀態：PENDING_PAYMENT 待付款、PAID 已付款、CANCELLED 已取消、FAILED 付款失敗',
+  `created_at` datetime NOT NULL COMMENT '建立時間',
+  `updated_at` datetime NOT NULL COMMENT '最後更新時間',
+  `paid_at` datetime DEFAULT NULL COMMENT '付款成功時間',
+  `cancelled_at` datetime DEFAULT NULL COMMENT '訂單取消時間',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_book_orders_order_no` (`order_no`),
+  KEY `idx_book_orders_book_id` (`book_id`),
+  KEY `idx_book_orders_buyer_member_id` (`buyer_member_id`),
+  KEY `idx_book_orders_order_status` (`order_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='書籍交易訂單；記錄會員向平台購買某本書的一次交易意圖';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `book_orders`
+--
+
+LOCK TABLES `book_orders` WRITE;
+/*!40000 ALTER TABLE `book_orders` DISABLE KEYS */;
+INSERT INTO `book_orders` VALUES (1,'B202609172230163846908',2,5,1000,'PENDING_PAYMENT','2026-09-17 22:30:16','2026-09-17 22:30:16',NULL,NULL),(2,'B202609211239248817577',2,5,1000,'PENDING_PAYMENT','2026-09-21 12:39:25','2026-09-21 12:39:25',NULL,NULL),(3,'B202609211241377414573',2,5,1000,'PENDING_PAYMENT','2026-09-21 12:41:38','2026-09-21 12:41:38',NULL,NULL),(4,'B202609211253222486715',2,5,1000,'PENDING_PAYMENT','2026-09-21 12:53:22','2026-09-21 12:53:22',NULL,NULL),(5,'B202609211514421595235',2,5,1000,'PENDING_PAYMENT','2026-09-21 15:14:42','2026-09-21 15:14:42',NULL,NULL),(6,'B202609212059241154916',2,7,1000,'PENDING_PAYMENT','2026-09-21 20:59:24','2026-09-21 20:59:24',NULL,NULL);
+/*!40000 ALTER TABLE `book_orders` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `books`
+--
+
+DROP TABLE IF EXISTS `books`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `books` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `price` int NOT NULL,
+  `status` tinyint NOT NULL DEFAULT '1',
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `books`
+--
+
+LOCK TABLES `books` WRITE;
+/*!40000 ALTER TABLE `books` DISABLE KEYS */;
+INSERT INTO `books` VALUES (1,'Book B1',1000,0,'2026-08-12 14:42:39'),(2,'Book B2',1000,1,NULL),(3,'Book_260808',888,1,NULL),(4,'Book A1',1000,1,NULL),(5,'Book A1',100,1,NULL),(6,'Book_260808',88888,1,NULL),(7,'Book_26080',1000,1,NULL),(8,'Book_26080',88888,0,'2026-08-20 15:16:12');
+/*!40000 ALTER TABLE `books` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `flyway_schema_history`
+--
+
+DROP TABLE IF EXISTS `flyway_schema_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `flyway_schema_history` (
+  `installed_rank` int NOT NULL,
+  `version` varchar(50) DEFAULT NULL,
+  `description` varchar(200) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `script` varchar(1000) NOT NULL,
+  `checksum` int DEFAULT NULL,
+  `installed_by` varchar(100) NOT NULL,
+  `installed_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `execution_time` int NOT NULL,
+  `success` tinyint(1) NOT NULL,
+  PRIMARY KEY (`installed_rank`),
+  KEY `flyway_schema_history_s_idx` (`success`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `flyway_schema_history`
+--
+
+LOCK TABLES `flyway_schema_history` WRITE;
+/*!40000 ALTER TABLE `flyway_schema_history` DISABLE KEYS */;
+INSERT INTO `flyway_schema_history` VALUES (1,'001','create books table','SQL','V001__create_books_table.sql',1196079431,'project26_v1','2026-08-09 08:12:30',37,1),(2,'002','books seed','SQL','V002__books_seed.sql',1793714838,'project26_v1','2026-08-09 08:12:30',6,1),(3,'003','add soft delete columns to books','SQL','V003__add_soft_delete_columns_to_books.sql',741233831,'project26_v1','2026-08-12 05:55:30',169,1),(4,'004','create members table','SQL','V004__create_members_table.sql',-1844983730,'project26_v1','2026-08-20 08:56:37',225,1),(5,'005','create auth tokens table','SQL','V005__create_auth_tokens_table.sql',-1947455287,'project26_v1','2026-08-20 13:07:33',8,1),(6,'006','create password reset tokens table','SQL','V006__ensure_auth_tokens_table_exists.sql',-1598064224,'project26_v1','2026-08-25 06:06:44',51,1),(7,'007','ensure password reset tokens table','SQL','V007__ensure_password_reset_tokens_table.sql',-1884430732,'project26_v1','2026-08-29 12:13:33',64,1),(8,'008','create book orders and payments tables','SQL','V008__create_book_orders_and_payments_tables.sql',930660575,'project26_v1','2026-09-10 03:36:59',241,1);
+/*!40000 ALTER TABLE `flyway_schema_history` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `members`
+--
+
+DROP TABLE IF EXISTS `members`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `members` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `gender` tinyint NOT NULL,
+  `account` varchar(64) NOT NULL,
+  `email` varchar(128) DEFAULT NULL,
+  `password` varchar(64) NOT NULL,
+  `status` tinyint NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_members_account` (`account`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `members`
+--
+
+LOCK TABLES `members` WRITE;
+/*!40000 ALTER TABLE `members` DISABLE KEYS */;
+INSERT INTO `members` VALUES (1,'PETER',1,'edward123','f0103053@gmail.com','$2a$10$qSU2PAuzJvL0XDhYoFPA/OkgiyNPskYL.tHKbOHoPD5lkuxF3ZYG.',1,'2026-08-20 16:56:58','2026-09-10 18:49:55',NULL),(2,'PETER',2,'del_20260820200601_edward1234','f0103053@gmail.com','$2a$10$VONXck1vEO7dZ/xI6McjuekcjpIwj86Eg0torv6vcbi7SoDh/BYdK',0,'2026-08-20 17:11:55','2026-08-20 20:06:01','2026-08-20 20:06:01'),(3,'Edward',1,'edward1234','leonard071123@gmail.com','$2a$10$7TUyuZXMBBeMPLL7Mg7re.xk9JY/tr.m/mFHLlEd8PO7NYX3RW8pm',1,'2026-08-20 20:08:07','2026-08-20 20:08:07',NULL),(4,'Edward',1,'peter123','f0103053@gmail.com','$2a$10$GcDmefdEq/m2tcumIuHJm.A899YaH5kJbdGt/J71cLTdnq454PenW',1,'2026-08-25 17:00:24','2026-08-29 20:57:34',NULL),(5,'Ed5',1,'edward12344','f0103053@gmail.com','$2a$10$KBU4Aqrnoqhe4IP7E9gaOOfIQStDuSJym5xuezTAgyckFE2aDyHYy',1,'2026-08-25 17:10:58','2026-09-21 15:22:17',NULL),(6,'Edward',1,'del_20260825173043_edward123445','f0103053@gmail.com','$2a$10$c2HTpqNngSqYuqNbAQvQIes2gBZ7Sgg8fwxYMRLDocCJ.An/BU4U2',0,'2026-08-25 17:11:17','2026-08-25 17:30:44','2026-08-25 17:30:44'),(7,'Edward',1,'edward123123123','f0103053@gmail.com','$2a$10$D7BsLV8jOH9z9x847euFXObMGBW0/ukjlPMiT7.ZrvqqDozemE1Gm',1,'2026-09-21 15:26:00','2026-09-21 15:43:54',NULL);
+/*!40000 ALTER TABLE `members` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `password_reset_tokens`
+--
+
+DROP TABLE IF EXISTS `password_reset_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `password_reset_tokens` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `member_id` bigint NOT NULL,
+  `token_hash` varchar(64) NOT NULL,
+  `expires_at` datetime NOT NULL,
+  `used` tinyint NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_password_reset_tokens_token_hash` (`token_hash`),
+  KEY `idx_password_reset_tokens_member` (`member_id`),
+  KEY `idx_password_reset_tokens_expires_at` (`expires_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `password_reset_tokens`
+--
+
+LOCK TABLES `password_reset_tokens` WRITE;
+/*!40000 ALTER TABLE `password_reset_tokens` DISABLE KEYS */;
+INSERT INTO `password_reset_tokens` VALUES (1,4,'2c6e6c3503ac22778caac375b75688792a75b96ff9c7737f3a9fb9d3b05e07f2','2026-08-29 20:51:12',1,'2026-08-29 20:21:12','2026-08-29 20:55:34','2026-08-29 20:55:34'),(2,4,'fed293426835d4f672926c7d28ed0b538db79475fa8a9702c2a54268f3b0af31','2026-08-29 21:25:34',1,'2026-08-29 20:55:34','2026-08-29 20:57:34','2026-08-29 20:57:34'),(3,5,'331b82003e154dcd1fafdfccd43b567679ddd6f2413937f731f039bd4299d2b4','2026-09-10 12:41:21',1,'2026-09-10 12:11:22','2026-09-10 12:12:52','2026-09-10 12:12:52'),(4,1,'c2c61976ec8761c9bfefb5de56b8f3590279187d31e872e2c1d18cbfdc8592e3','2026-09-10 19:16:24',1,'2026-09-10 18:46:24','2026-09-10 18:47:01','2026-09-10 18:47:01'),(5,1,'b77e9c0ce601b457be53d59d3d73d76bc5fb7d33950cc02e1d21071a3d5630d6','2026-09-10 19:19:04',1,'2026-09-10 18:49:04','2026-09-10 18:49:55','2026-09-10 18:49:55'),(6,7,'b1c5e5ee4dacb348f8be15be3c037d6b30e047d267a30a3c2bfa9902b1f3481c','2026-09-21 16:13:23',1,'2026-09-21 15:43:23','2026-09-21 15:43:54','2026-09-21 15:43:54');
+/*!40000 ALTER TABLE `password_reset_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payment_notifications`
+--
+
+DROP TABLE IF EXISTS `payment_notifications`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payment_notifications` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '金流通知流水號',
+  `payment_id` bigint DEFAULT NULL COMMENT '對應 payments.id；解析前或找不到付款時可為 NULL',
+  `merchant_order_no` varchar(64) DEFAULT NULL COMMENT '藍新通知中的 MerchantOrderNo',
+  `provider` varchar(32) NOT NULL DEFAULT 'NEWEBPAY' COMMENT '金流服務商；目前固定為 NEWEBPAY',
+  `provider_trade_no` varchar(64) DEFAULT NULL COMMENT '藍新交易序號 TradeNo',
+  `notify_status` varchar(32) NOT NULL DEFAULT 'RECEIVED' COMMENT '通知處理狀態：RECEIVED 已收到、PROCESSED 已處理、FAILED 處理失敗、IGNORED 重複或無需處理',
+  `raw_payload` text NOT NULL COMMENT '藍新 NotifyURL 原始回傳內容；保留用於查帳與問題排查',
+  `verified` tinyint NOT NULL DEFAULT '0' COMMENT '是否通過 TradeSha 或資料驗證；1 是、0 否',
+  `received_at` datetime NOT NULL COMMENT '收到通知時間',
+  `processed_at` datetime DEFAULT NULL COMMENT '處理完成時間',
+  `error_message` varchar(500) DEFAULT NULL COMMENT '處理失敗原因',
+  PRIMARY KEY (`id`),
+  KEY `idx_payment_notifications_payment_id` (`payment_id`),
+  KEY `idx_payment_notifications_merchant_order_no` (`merchant_order_no`),
+  KEY `idx_payment_notifications_provider_trade_no` (`provider_trade_no`),
+  KEY `idx_payment_notifications_notify_status` (`notify_status`),
+  KEY `idx_payment_notifications_received_at` (`received_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='金流通知紀錄；保存藍新 NotifyURL 回呼，支援重送、查帳與除錯';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payment_notifications`
+--
+
+LOCK TABLES `payment_notifications` WRITE;
+/*!40000 ALTER TABLE `payment_notifications` DISABLE KEYS */;
+/*!40000 ALTER TABLE `payment_notifications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `payments`
+--
+
+DROP TABLE IF EXISTS `payments`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `payments` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '付款紀錄流水號',
+  `order_id` bigint NOT NULL COMMENT '對應 book_orders.id',
+  `merchant_order_no` varchar(64) NOT NULL COMMENT '送給藍新的商店訂單編號 MerchantOrderNo',
+  `merchant_id` varchar(32) NOT NULL COMMENT '藍新商店代號 MerchantID',
+  `provider` varchar(32) NOT NULL DEFAULT 'NEWEBPAY' COMMENT '金流服務商；目前固定為 NEWEBPAY',
+  `provider_trade_no` varchar(64) DEFAULT NULL COMMENT '藍新交易序號 TradeNo；藍新回傳後寫入',
+  `payment_method` varchar(32) DEFAULT NULL COMMENT '付款方式，例如 CREDIT、WEBATM、VACC、CVS',
+  `amount` int NOT NULL COMMENT '付款金額；必須與訂單金額一致',
+  `payment_status` varchar(32) NOT NULL DEFAULT 'INIT' COMMENT '付款狀態：INIT 已建立、PENDING 待付款、PAID 已付款、FAILED 失敗、CANCELLED 已取消、REFUNDED 已退款',
+  `trade_sha` varchar(128) DEFAULT NULL COMMENT '建立付款時產生的 TradeSha；用於除錯與對帳',
+  `return_code` varchar(32) DEFAULT NULL COMMENT '藍新回傳狀態碼',
+  `return_message` varchar(255) DEFAULT NULL COMMENT '藍新回傳訊息',
+  `paid_at` datetime DEFAULT NULL COMMENT '藍新確認付款成功時間',
+  `created_at` datetime NOT NULL COMMENT '建立時間',
+  `updated_at` datetime NOT NULL COMMENT '最後更新時間',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_payments_merchant_order_no` (`merchant_order_no`),
+  KEY `idx_payments_order_id` (`order_id`),
+  KEY `idx_payments_provider_trade_no` (`provider_trade_no`),
+  KEY `idx_payments_payment_status` (`payment_status`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='金流付款紀錄；一筆訂單對應一次藍新付款流程';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `payments`
+--
+
+LOCK TABLES `payments` WRITE;
+/*!40000 ALTER TABLE `payments` DISABLE KEYS */;
+INSERT INTO `payments` VALUES (1,1,'B202609172230163846908','MS160394331','NEWEBPAY',NULL,NULL,1000,'PENDING','3AE63D13063E1AE75386551A75E6F652C3CE48E2F7029DF8389E5262CBCFA945',NULL,NULL,NULL,'2026-09-17 22:30:16','2026-09-17 22:30:17'),(2,2,'B202609211239248817577','MS160394331','NEWEBPAY',NULL,NULL,1000,'PENDING','507C018ACA0DBF9E8D7DE55E8B15055A658AA9FA7BD42CE8390333FBC2CD5534',NULL,NULL,NULL,'2026-09-21 12:39:25','2026-09-21 12:39:25'),(3,3,'B202609211241377414573','MS160394331','NEWEBPAY',NULL,NULL,1000,'PENDING','A1A6441D6AFBB75FE2CDE6ECCCDA45E02548E705BFB263FE299ECD3C001752B0',NULL,NULL,NULL,'2026-09-21 12:41:38','2026-09-21 12:41:38'),(4,4,'B202609211253222486715','MS160394331','NEWEBPAY',NULL,NULL,1000,'PENDING','315E3BC87A6F72B8DF47300145A2EE457879866194AFC810EAB2C2E89D119884',NULL,NULL,NULL,'2026-09-21 12:53:22','2026-09-21 12:53:22'),(5,5,'B202609211514421595235','MS160394331','NEWEBPAY',NULL,NULL,1000,'PENDING','02A986ED5F07700A5D40DC56C0AD1B176E858733F890F7855F0BD98157B122C4',NULL,NULL,NULL,'2026-09-21 15:14:42','2026-09-21 15:14:42'),(6,6,'B202609212059241154916','MS160394331','NEWEBPAY',NULL,NULL,1000,'PENDING','34924098F56FF8E5727F71E0423555D77C9AA29D370F56085D53694B52C467DF',NULL,NULL,NULL,'2026-09-21 20:59:24','2026-09-21 20:59:24');
+/*!40000 ALTER TABLE `payments` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-09-22 12:21:51

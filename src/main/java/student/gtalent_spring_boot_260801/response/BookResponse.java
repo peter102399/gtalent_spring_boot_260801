@@ -3,17 +3,19 @@ package student.gtalent_spring_boot_260801.response;
 import student.gtalent_spring_boot_260801.entity.Book;
 
 public class BookResponse {
-
-        private Long id;
+    private Long id;
 
     private String name;
 
     private Integer price;
 
-    public BookResponse(Book book) {
+    private String purchaseStatus;
+
+    public BookResponse(Book book, String purchaseStatus) {
         this.id = book.getId();
         this.name = book.getName();
         this.price = book.getPrice();
+        this.purchaseStatus = purchaseStatus;
     }
 
     public Long getId() {
@@ -28,6 +30,8 @@ public class BookResponse {
         return price;
     }
 
-}
-    
+    public String getPurchaseStatus() {
+        return purchaseStatus;
+    }
 
+}
