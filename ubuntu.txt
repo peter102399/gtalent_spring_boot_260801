@@ -1,0 +1,12 @@
+ssh-keygen -t ed25519 -C "github-actions-gtalent-deploy-1" -f "D:/0804new/gtalent_actions_ed25519_26092201"
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICEaocXS1LDOEnYGra9q/qbffGCIHXS1c+dWIIJlCz5D github-actions-gtalent-deploy
+
+takeown /f "D:\0804new\gtalent_actions_ed25519_26092201"
+
+icacls "D:\0804new\gtalent_actions_ed25519_26092201" /reset
+icacls "D:\0804new\gtalent_actions_ed25519_26092201" /grant:r "${env:USERNAME}:(R)"
+icacls "D:\0804new\gtalent_actions_ed25519_26092201" /inheritance:r
+icacls "D:\0804new\gtalent_actions_ed25519_26092201"
+
+ssh -i "D:\0804new\gtalent_actions_ed25519_26092201" ubuntu@43.213.4.197
