@@ -10,3 +10,29 @@ icacls "D:\0804new\gtalent_actions_ed25519_26092201" /inheritance:r
 icacls "D:\0804new\gtalent_actions_ed25519_26092201"
 
 ssh -i "D:\0804new\gtalent_actions_ed25519_26092201" ubuntu@43.213.4.197
+
+
+測試是否能連線:
+ssh -i "D:\0804new\test45" ubuntu@43.213.4.197
+
+
+無法連線 請用以下指令增加權限後再次連線
+takeown /f "d:\0804new\test45"
+
+icacls "D:\0804new\test45" /reset
+icacls "D:\0804new\test45" /grant:r "${env:USERNAME}:(R)"
+icacls "D:\0804new\test45" /inheritance:r
+icacls "D:\0804new\test45"
+
+ssh `
+  -o StrictHostKeyChecking=accept-new `
+  -o UserKnownHostsFile="D:\0804new\test45_ec2_known_hosts" `
+  -o KexAlgorithms=curve25519-sha256 `
+  -i "D:\0804new\test45" `
+  ubuntu@43.213.4.197 exit
+
+  Get-Content "D:\0804new\test45_ec2_known_hosts"
+
+  Get-Content "D:\0804new\test45_ec2_known_hosts"
+
+  Get-Content "D:\0804new\test45"

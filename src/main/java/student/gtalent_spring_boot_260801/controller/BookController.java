@@ -42,7 +42,8 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<BookResponse> getAll(
         @RequestParam(defaultValue = "1") int page,
-        @RequestParam(defaultValue = "10") int size) {
+        @RequestParam(defaultValue = "10") int size, 
+        @RequestParam(defaultValue = "id_asc") String sortBy){
         // 預設頁碼從1開始
         if(page < 1) {
             page = 1;
@@ -59,7 +60,7 @@ public class BookController {
             size = 50;
         }
         
-        List<Book> books = repository.findAll(page, size);
+        List<Book> books = repository.findAll(page, size, sortBy);
 
         // API 不直接回傳 Book Entity，避免把 status、deletedAt 暴露給前端。
         // books.stream()：把 List<Book> 轉成串流，準備逐筆處理。

@@ -33,26 +33,41 @@ public class BookRepositoryImpl implements BookRepository {
         this.transactionManager = transactionManager;
     }
 
-    @Override
-    public List<Book> findAll(int page, int size) {
+   @Override
+    public List<Book> findAll(int page, int size, String sortBy) {
         int offset = (page - 1) * size;
 
-        // 1代表存在, 所以要抓出status = 1
-        List<?> queryResults =  entityManager
-                                .createNativeQuery("SELECT * FROM books WHERE status = ? ORDER BY id ASC", Book.class)
-                                .setParameter(1, 1)
-                                .setFirstResult(offset)
-                                .setMaxResults(size)
-                                .getResultList();
+        // 核心：根據前端傳來的字串，決定 SQL 的排序語法
+        String orderBySql;
+        switch (sortBy) {
+            case "price_asc":
+                orderBySql = "ORDER BY price ASC";   // 價錢：低 → 高
+                break;
+            case "price_desc":
+                orderBySql = "ORDER BY price DESC";  // 價錢：高 → 低
+                break;
+            case "id_asc":
+            default:
+                orderBySql = "ORDER BY id ASC";      // 預設照 ID 排
+                break;
+        }
 
-        List<Book> books = new ArrayList<>();                        
-        for(Object obj : queryResults) {
+        // 1 代表存在，所以要指出status = 1
+        // 🌟 這裡把原本死板的 "ORDER BY id ASC" 換成剛剛決定好的動態變數 "+ orderBySql" 囉！
+        List<?> queryResults = entityManager
+                .createNativeQuery("SELECT * FROM books WHERE status = ? " + orderBySql, Book.class)
+                .setParameter(1, 1)
+                .setFirstResult(offset)
+                .setMaxResults(size)
+                .getResultList();
+
+        List<Book> books = new ArrayList<>();
+        for (Object obj : queryResults) {
             books.add((Book) obj);
         }
 
         return books;
     }
-
     @Override
     public Book findOneById(Long id) {
         // 1代表存在, 所以要抓出status = 1

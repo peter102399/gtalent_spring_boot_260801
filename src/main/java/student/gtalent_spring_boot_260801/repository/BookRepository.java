@@ -7,7 +7,7 @@ import java.util.List;
 public interface BookRepository {
 
     // 取得所有書籍
-    public List<Book> findAll(int page, int size);
+    public List<Book> findAll(int page, int size, String sortBy);
 
     // 取得一本書籍by Id
     public Book findOneById(Long id);

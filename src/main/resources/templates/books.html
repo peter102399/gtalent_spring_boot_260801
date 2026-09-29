@@ -158,7 +158,15 @@
         </thead>
         <tbody id="booksBody"></tbody>
     </table>
-    <div id="pager" class="pager" hidden>
+      <div id="pager" class="pager" hidden>
+         <span style="margin-right: 15px;">
+            <label for="sortBy">排序：</label>
+            <select id="sortBy">
+                <option value="id_asc">預設</option>
+                <option value="price_asc">價錢：低 → 高</option>
+                <option value="price_desc">價錢：高 → 低</option>
+            </select>
+        </span>
         <label for="pageSize">每頁</label>
         <select id="pageSize">
             <option value="5">5 筆</option>
@@ -240,8 +248,9 @@
     // currentPage 決定目前頁碼，pageSize 決定每頁顯示幾筆。
     function loadBooks() {
         const pageSize = $("#pageSize").val();
+        const sortBy = $("#sortBy").val();
         const request = apiAjax({
-            url: `/books?page=${currentPage}&size=${pageSize}`,
+            url: `/books?page=${currentPage}&size=${pageSize}&sortBy=${encodeURIComponent(sortBy)}`,
             method: "GET"
         });
 
@@ -431,6 +440,12 @@
     // 使用者改變每頁筆數時，回到第 1 頁重新查詢。
     // 這樣可以避免原本頁碼超過新的總頁數。
     $("#pageSize").on("change", function () {
+        currentPage = 1;
+        loadBooks();
+    });
+
+    // 排序條件改變時，回到第一頁並重新載入書籍。
+    $("#sortBy").on("change", function () {
         currentPage = 1;
         loadBooks();
     });
