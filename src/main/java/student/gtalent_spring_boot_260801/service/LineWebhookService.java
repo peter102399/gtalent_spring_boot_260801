@@ -34,7 +34,7 @@ public class LineWebhookService {
             if (text.contains("愛你")) {
                 // 呼叫新方法：回覆 LOVE U TOO 加上一個大愛心貼圖
                 // "11537" 和 "52002734" 是 LINE 官方提供的內建免費貼圖（熊大兔兔系列）
-                lineReplyService.replyTextAndSticker(event.replyToken(), "LOVE U TOO", "11537", "52002734");
+                lineReplyService.replyTextAndSticker(event.replyToken(), "LOVE U TOO", "11537", "52002746");
             } else {
                 lineReplyService.replyText(event.replyToken(), "收到：" + text);
             }
