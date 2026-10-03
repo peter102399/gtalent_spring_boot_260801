@@ -1,17 +1,23 @@
 package student.gtalent_spring_boot_260801.service;
 
+
 import org.springframework.stereotype.Service;
 
-
-import com.linecorp.bot.webhook.model.MessageEvent;
 import com.linecorp.bot.webhook.model.Event;
 import com.linecorp.bot.webhook.model.MessageContent;
+import com.linecorp.bot.webhook.model.MessageEvent;
 import com.linecorp.bot.webhook.model.TextMessageContent;
 
-@Service 
+@Service
 public class LineWebhookService {
-    
-     public void handleEvent(Event event) {
+
+    private final LineReplyService lineReplyService;
+
+    public LineWebhookService(LineReplyService lineReplyService) {
+        this.lineReplyService = lineReplyService;
+    }
+
+    public void handleEvent(Event event) {
         if (event instanceof MessageEvent messageEvent) {
             handleMessageEvent(messageEvent);
         }
@@ -24,6 +30,7 @@ public class LineWebhookService {
             String lineUserId = event.source().userId();
             String text = textMessage.text();
             System.out.println("LINE webhook text message from " + lineUserId + ": " + text);
+            lineReplyService.replyText(event.replyToken(), "收到：" + text);
         }
     }
 }
