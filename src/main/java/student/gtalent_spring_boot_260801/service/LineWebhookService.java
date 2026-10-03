@@ -30,8 +30,11 @@ public class LineWebhookService {
             String lineUserId = event.source().userId();
             String text = textMessage.text();
             System.out.println("LINE webhook text message from " + lineUserId + ": " + text);
-         if ("愛你".equals(text)) {
-                lineReplyService.replyText(event.replyToken(), "LOVE U TOO");
+          // 模糊比對：只要訊息包含「愛你」就觸發
+            if (text.contains("愛你")) {
+                // 呼叫新方法：回覆 LOVE U TOO 加上一個大愛心貼圖
+                // "11537" 和 "52002734" 是 LINE 官方提供的內建免費貼圖（熊大兔兔系列）
+                lineReplyService.replyTextAndSticker(event.replyToken(), "LOVE U TOO", "11537", "52002734");
             } else {
                 lineReplyService.replyText(event.replyToken(), "收到：" + text);
             }
