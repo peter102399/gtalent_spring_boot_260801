@@ -30,7 +30,11 @@ public class LineWebhookService {
             String lineUserId = event.source().userId();
             String text = textMessage.text();
             System.out.println("LINE webhook text message from " + lineUserId + ": " + text);
-            lineReplyService.replyText(event.replyToken(), "收到：" + text);
+         if ("愛你".equals(text)) {
+                lineReplyService.replyText(event.replyToken(), "LOVE U TOO");
+            } else {
+                lineReplyService.replyText(event.replyToken(), "收到：" + text);
+            }
         }
     }
 }
