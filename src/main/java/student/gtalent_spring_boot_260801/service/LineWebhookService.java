@@ -43,6 +43,12 @@ public class LineWebhookService {
                 lineReplyService.replyText(event.replyToken(), "金額已清空！目前總額為：0 元");
                 return;
             }
+                // 💡 新增：查詢指令
+            if ("查詢".equals(text) || "總額".equals(text)) {
+                MoneyRecord record = moneyRecordRepository.findById(1L).orElse(new MoneyRecord(1L, 0));
+                lineReplyService.replyText(event.replyToken(), "💰 目前資料庫累計總金額為：" + record.getTotalMoney() + " 元");
+                return; // 執行完就結束，不往下走
+            }
 
             // 2. 模糊比對：保留你原本的愛心貼圖功能
             if (text.contains("愛你") || text.contains("愛妳")) {
