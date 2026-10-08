@@ -34,6 +34,14 @@ public class LineWebhookService {
             String lineUserId = event.source().userId();
             String text = textMessage.text().trim();
             System.out.println("LINE webhook text message from " + lineUserId + ": " + text);
+
+            String reply = switch (text.toLowerCase()) {
+                case "ping" -> "pong";
+                case "你好" -> "你好！我是群組機器人。";
+                default -> "收到：" + text;
+            };
+
+            lineReplyService.replyText(event.replyToken(), reply);
             
             // 1. 清除指令：把資料庫 id=1 的金額改回 0
             if ("清除".equals(text)) {
