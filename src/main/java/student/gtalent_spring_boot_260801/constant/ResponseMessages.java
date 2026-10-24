@@ -45,6 +45,7 @@ public final class ResponseMessages {
     public static final String NOT_FOUND                = "30002"; // API 路徑不存在。
     public static final String RESOURCE_NOT_FOUND       = "30003"; // 資料不存在。
 
+    public static final String BOOK_NOT_FOUND           = "40001";
     public static final String MEMBER_NOT_FOUND         = "40002"; // 找不到會員。
     public static final String MEMBER_LOGIN_FAILED      = "40003"; // 會員登入失敗。
     public static final String TOKEN_INVALID            = "40004"; // token 不合法。
@@ -88,6 +89,7 @@ public final class ResponseMessages {
         messages.put(HTTP_REQUEST_FAILED,   "HTTP 其他相關的錯誤");
         messages.put(METHOD_NOT_ALLOWED,    "HTTP 方法不支援");
         messages.put(NOT_FOUND,             "找不到 API");
+        messages.put(BOOK_NOT_FOUND,        "找不到書籍");
         messages.put(MEMBER_NOT_FOUND,      "找不到會員");
         messages.put(MEMBER_LOGIN_FAILED,   "帳號或密碼錯誤");
         messages.put(TOKEN_INVALID,         "token 不合法");

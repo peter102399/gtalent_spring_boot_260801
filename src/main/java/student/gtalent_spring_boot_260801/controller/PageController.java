@@ -25,11 +25,11 @@ public class PageController {
         return "login";
     }
 
-<<<<<<< HEAD
     @GetMapping("/page/menu")
     public String menuPage() {
         return "menu";
-=======
+    }
+
     @GetMapping("/page/register")
     public String registerPage() {
         return "register";
@@ -38,7 +38,6 @@ public class PageController {
     @GetMapping("/page/books")
     public String booksPage() {
         return "books";
->>>>>>> 0e199f744dd30666b6cd13d5547de7947b60f4ed
     }
 
     @GetMapping("/page/liff")
