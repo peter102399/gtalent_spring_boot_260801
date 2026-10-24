@@ -1,0 +1,53 @@
+﻿本機修改程式後，部署到 AWS 網站
+====================================
+
+適用方式：在本機 Windows 電腦修改程式，將新版部署到 AWS 上的網站。
+以下步驟會打包程式、上傳 JAR、備份 AWS 舊版、替換 JAR 並重啟服務。
+不需要先更新 Git；單純重啟服務不會套用本機尚未上傳的修改。
+
+部署前確認
+----------
+1. 開啟 PowerShell。
+2. 切換到專案資料夾：
+
+   cd D:\0804new\gtalent_spring_boot_260801
+
+3. 確認 SSH 私鑰檔案存在：
+
+   D:\0804new\gtalent_actions_ed25519_26092201
+
+
+部署指令
+--------
+每次本機程式修改完成後，在專案資料夾的 PowerShell 貼上整段執行：
+
+```powershell
+.\mvnw.cmd clean package -DskipTests
+if ($LASTEXITCODE -ne 0) { throw "打包失敗，停止部署" }
+
+$jar = "target/gtalent_spring_boot_260801-0.0.1-SNAPSHOT.jar"
+$key = "D:\0804new\gtalent_actions_ed25519_26092201"
+$stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+$server = "ubuntu@43.213.4.197"
+
+scp -i $key $jar "${server}:/home/ubuntu/gtalent_spring_boot_260801/target/app.jar.new"
+if ($LASTEXITCODE -ne 0) { throw "上傳失敗，停止部署" }
+
+ssh -i $key $server "cd ~/gtalent_spring_boot_260801 && cp target/gtalent_spring_boot_260801-0.0.1-SNAPSHOT.jar target/app.jar.bak-$stamp && mv target/app.jar.new target/gtalent_spring_boot_260801-0.0.1-SNAPSHOT.jar && sudo systemctl restart gtalent.service && systemctl is-active gtalent.service"
+if ($LASTEXITCODE -ne 0) { throw "部署或重啟失敗" }
+```
+
+
+部署成功後
+----------
+最後看到 `active` 代表 gtalent.service 正常運作。回到網站重新整理；若還是舊畫面，按 Ctrl+F5 強制重新載入。
+
+部署過程會在 AWS 專案的 target 資料夾保留舊 JAR 備份，檔名格式為：
+app.jar.bak-年月日-時分秒
+
+注意事項
+--------
+- 請在本機專案資料夾執行部署指令。
+- 打包或上傳失敗時，指令會停止，不會繼續替換 AWS 上的 JAR。
+- 此流程只上傳本機打包出的 JAR，不會推送或修改 Git。
+- 不要把 SSH 私鑰檔案傳給他人或上傳到 Git。

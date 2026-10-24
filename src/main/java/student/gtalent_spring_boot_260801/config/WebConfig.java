@@ -23,14 +23,22 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns(
                         "/members/**",
+<<<<<<< HEAD
                         "/api/orders/**"
+=======
+                        "/books/**",
+                        "/payments/**"
+>>>>>>> 0e199f744dd30666b6cd13d5547de7947b60f4ed
                 )
                 .excludePathPatterns(
                         "/members/register",
                         "/members/login",
                         "/members/logout",
                         "/members/forgot-password",
-                        "/members/reset-password"
-                );
+                        "/members/reset-password",
+                        "/payments/newebpay/notify",
+                        "/payments/newebpay/return",
+                        "/api/line/**"
+                     );
     }
 }
