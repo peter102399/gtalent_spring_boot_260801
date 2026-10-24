@@ -1,58 +1,179 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f4ec">
     <title>早餐菜單</title>
     <style>
-        :root { font-family: Arial, "Noto Sans TC", sans-serif; color: #1f2933; background: #f4f6f8; }
-        body { margin: 0; }
-        header { background: white; border-bottom: 1px solid #d9e2ec; }
-        .bar, main { width: min(900px, calc(100% - 32px)); margin: auto; }
-        .bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; }
-        h1 { margin: 0; font-size: 24px; }
-        main { margin: 28px auto; background: white; border: 1px solid #d9e2ec; border-radius: 10px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px 16px; border-bottom: 1px solid #edf2f7; text-align: left; }
-        th { background: #f8fafc; color: #52606d; }
-        .price, .quantity { text-align: right; }
-        input[type=number] { width: 72px; padding: 8px; border: 1px solid #bcccdc; border-radius: 6px; }
-        button { padding: 10px 14px; border: 1px solid #bcccdc; border-radius: 6px; background: white; font-weight: 700; cursor: pointer; }
-        button.primary { background: #176b52; color: white; border-color: #176b52; }
-        button:disabled { opacity: .55; cursor: wait; }
-        .message { padding: 22px; text-align: center; color: #627d98; }
-        .error { color: #9b1c1c; }
-        .checkout { padding: 18px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; flex-wrap: wrap; }
-        #result { margin: 0 18px 18px; padding: 14px; border-radius: 6px; background: #edf7f2; }
-        #result.error { background: #fff1f0; }
-        @media (max-width: 600px) { th, td { padding: 10px 8px; } .description { display: none; } }
+        :root {
+            color-scheme: light;
+            font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+            color: #24372e;
+            background: #f7f4ec;
+            font-synthesis: none;
+            text-rendering: optimizeLegibility;
+            --green: #245b43;
+            --green-dark: #1a4533;
+            --muted: #718078;
+            --line: #e9e4d8;
+            --cream: #f7f4ec;
+            --white: #fffefa;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-width: 320px; min-height: 100vh; }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        .site-header { border-bottom: 1px solid rgba(50, 74, 57, .09); background: rgba(255, 254, 250, .9); }
+        .header-inner, main { width: min(1080px, calc(100% - 40px)); margin-inline: auto; }
+        .header-inner { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .brand { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
+        .brand-mark { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; background: #e7efe4; font-size: 22px; }
+        .brand-name { font-size: 15px; font-weight: 800; letter-spacing: .08em; }
+        .brand-caption { margin-top: 2px; color: var(--muted); font-size: 11px; letter-spacing: .12em; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .header-note { color: var(--muted); font-size: 13px; }
+        .button { min-height: 42px; padding: 0 17px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); color: var(--green-dark); font-weight: 700; transition: transform .18s ease, background .18s ease, box-shadow .18s ease; }
+        .button:hover { transform: translateY(-1px); box-shadow: 0 5px 14px rgba(32, 60, 43, .1); }
+        .button:focus-visible, input:focus-visible { outline: 3px solid #94b99d; outline-offset: 2px; }
+        .button-primary { border-color: var(--green); background: var(--green); color: white; }
+        .button-primary:hover { background: var(--green-dark); }
+        main { padding: 42px 0 150px; }
+        .hero { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 28px; }
+        .eyebrow { margin: 0 0 10px; color: #718969; font-size: 12px; font-weight: 800; letter-spacing: .18em; }
+        h1 { margin: 0; color: #20392c; font-size: clamp(30px, 5vw, 44px); letter-spacing: .02em; line-height: 1.2; }
+        .hero-copy { max-width: 540px; margin: 12px 0 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
+        .open-tag { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid #e0e9dc; border-radius: 999px; background: #eef4eb; color: var(--green); font-size: 12px; font-weight: 700; }
+        .open-dot { width: 8px; height: 8px; border-radius: 50%; background: #6ca76c; box-shadow: 0 0 0 4px rgba(108, 167, 108, .12); }
+        .menu-panel { padding: 22px; border: 1px solid var(--line); border-radius: 22px; background: var(--white); box-shadow: 0 16px 50px rgba(54, 62, 45, .06); }
+        .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 0 2px 18px; }
+        .section-heading h2 { margin: 0; color: #304438; font-size: 18px; }
+        .section-heading span { color: var(--muted); font-size: 13px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .menu-card { min-width: 0; overflow: hidden; border: 1px solid #eee9df; border-radius: 17px; background: white; transition: transform .2s ease, box-shadow .2s ease; }
+        .menu-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(44, 65, 48, .1); }
+        .menu-image-wrap { position: relative; aspect-ratio: 1.72; overflow: hidden; background: #ede9de; }
+        .menu-image { position: relative; z-index: 1; width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .35s ease; }
+        .menu-card:hover .menu-image { transform: scale(1.04); }
+        .image-fallback { position: absolute; z-index: 0; inset: 0; display: grid; place-items: center; color: #7c897a; font-size: 34px; }
+        .menu-card-content { padding: 15px; }
+        .menu-card-top { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+        .menu-name { margin: 0; color: #263a2e; font-size: 16px; font-weight: 800; line-height: 1.45; }
+        .menu-price { flex: 0 0 auto; color: var(--green); font-size: 16px; font-weight: 800; }
+        .menu-description { min-height: 40px; margin: 7px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid #f0ede6; }
+        .choose-label { color: #78837b; font-size: 12px; }
+        .quantity-control { display: inline-flex; align-items: center; gap: 8px; }
+        .quantity-button { width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 1px solid #dce4da; border-radius: 50%; background: #f7faf5; color: var(--green); font-size: 18px; font-weight: 700; }
+        .quantity-button:hover { border-color: #a6bca5; background: #eaf1e7; }
+        .quantity-input { width: 34px; padding: 0; border: 0; background: transparent; color: #263a2e; text-align: center; font-weight: 800; appearance: textfield; }
+        .quantity-input::-webkit-inner-spin-button, .quantity-input::-webkit-outer-spin-button { margin: 0; appearance: none; }
+        .message { padding: 46px 18px; color: var(--muted); text-align: center; line-height: 1.8; }
+        .message.error { color: #9b3d32; }
+        .message-icon { display: block; margin-bottom: 10px; font-size: 32px; }
+        .retry-button { margin-top: 14px; }
+        .order-bar { position: fixed; z-index: 5; right: 0; bottom: 0; left: 0; padding: 14px 20px max(14px, env(safe-area-inset-bottom)); border-top: 1px solid rgba(55, 75, 59, .12); background: rgba(255, 254, 250, .94); box-shadow: 0 -8px 30px rgba(43, 54, 42, .07); backdrop-filter: blur(12px); }
+        .order-inner { width: min(1080px, 100%); display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-inline: auto; }
+        .order-summary { display: flex; align-items: baseline; gap: 10px; }
+        .order-count { color: var(--muted); font-size: 13px; }
+        .order-total { color: #24372e; font-size: 14px; font-weight: 700; }
+        .order-total strong { margin-left: 5px; color: var(--green); font-size: 23px; }
+        .order-action { display: flex; align-items: center; gap: 12px; }
+        .login-hint { color: var(--muted); font-size: 12px; }
+        .order-button { min-width: 148px; min-height: 48px; }
+        .order-button:disabled { transform: none; box-shadow: none; cursor: not-allowed; opacity: .5; }
+        .toast { position: fixed; z-index: 8; top: 18px; left: 50%; max-width: calc(100% - 32px); padding: 12px 17px; border-radius: 999px; background: #263a2e; color: white; box-shadow: 0 8px 24px rgba(0,0,0,.15); opacity: 0; pointer-events: none; transform: translate(-50%, -8px); transition: opacity .2s ease, transform .2s ease; }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
+        @media (max-width: 760px) { .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .header-note { display: none; } }
+        @media (max-width: 520px) {
+            .header-inner, main { width: min(100% - 28px, 480px); }
+            .header-inner { min-height: 66px; }
+            .brand-mark { width: 38px; height: 38px; }
+            .button { min-height: 39px; padding-inline: 13px; font-size: 13px; }
+            main { padding-top: 30px; }
+            .hero { display: block; margin-bottom: 20px; }
+            .hero-copy { max-width: 360px; font-size: 13px; }
+            .open-tag { margin-top: 16px; }
+            .menu-panel { padding: 14px; border-radius: 18px; }
+            .menu-grid { grid-template-columns: 1fr; gap: 12px; }
+            .menu-card { display: grid; grid-template-columns: 118px minmax(0, 1fr); }
+            .menu-image-wrap { height: 100%; min-height: 154px; aspect-ratio: auto; }
+            .menu-card-content { display: flex; flex-direction: column; justify-content: center; padding: 12px; }
+            .menu-name { font-size: 14px; }
+            .menu-price { font-size: 14px; }
+            .menu-description { min-height: 0; margin: 5px 0 9px; font-size: 11px; }
+            .card-footer { padding-top: 8px; }
+            .choose-label { font-size: 11px; }
+            .quantity-control { gap: 5px; }
+            .quantity-button { width: 29px; height: 29px; }
+            .order-bar { padding-inline: 14px; }
+            .order-inner { align-items: center; gap: 8px; }
+            .order-summary { display: block; }
+            .order-count { display: block; margin-bottom: 3px; font-size: 11px; }
+            .order-total { font-size: 11px; }
+            .order-total strong { font-size: 19px; }
+            .order-action { display: block; text-align: right; }
+            .login-hint { display: block; margin-bottom: 5px; font-size: 10px; }
+            .order-button { min-width: 128px; min-height: 42px; font-size: 12px; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
     </style>
 </head>
 <body>
-<header><div class="bar"><h1>早餐菜單</h1><button id="logoutButton" type="button">登出</button></div></header>
-<main>
-    <div id="message" class="message">正在載入菜單…</div>
-    <table id="menuTable" hidden>
-        <thead><tr><th></th><th class="th-name">品項</th><th class="th-description">說明</th><th class="price">價格</th><th class="quantity">數量</th></tr></thead>
-        <tbody id="menuBody"></tbody>
-    </table>
-    <div class="checkout" id="checkout" hidden>
-        <strong>總計：NT$ <span id="total">0</span></strong>
-        <button class="primary" id="submitOrder" type="button">送出訂單</button>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="/page/menu" aria-label="早餐菜單首頁">
+            <span class="brand-mark" aria-hidden="true">☀️</span>
+            <span><span class="brand-name">早安食堂</span><span class="brand-caption">GOOD MORNING, GOOD FOOD</span></span>
+        </a>
+        <div class="header-actions">
+            <span class="header-note">把喜歡的早餐，慢慢選進今天</span>
+            <button class="button" id="authButton" type="button">登入</button>
+        </div>
     </div>
-    <div id="result" hidden aria-live="polite"></div>
+</header>
+
+<main>
+    <section class="hero" aria-labelledby="pageTitle">
+        <div>
+            <p class="eyebrow">A FRESH START TO YOUR DAY</p>
+            <h1 id="pageTitle">早餐菜單</h1>
+            <p class="hero-copy">現點現做，為早晨留一點好味道。選好餐點與數量，送出訂單即可完成點餐。</p>
+        </div>
+        <div class="open-tag"><span class="open-dot" aria-hidden="true"></span>今日供應中</div>
+    </section>
+
+    <section class="menu-panel" aria-labelledby="menuHeading">
+        <div class="section-heading"><h2 id="menuHeading">人氣早餐</h2><span id="menuCount">正在準備菜單…</span></div>
+        <div id="message" class="message" role="status" aria-live="polite"><span class="message-icon" aria-hidden="true">🥣</span>正在載入今日菜單…</div>
+        <div id="menuGrid" class="menu-grid" hidden></div>
+        <button class="button retry-button" id="retryButton" type="button" hidden>重新載入</button>
+    </section>
 </main>
+
+<aside class="order-bar" aria-label="訂單摘要">
+    <div class="order-inner">
+        <div class="order-summary">
+            <span class="order-count" id="orderCount">尚未選擇餐點</span>
+            <span class="order-total">總計 <strong>NT$ <span id="total">0</span></strong></span>
+        </div>
+        <div class="order-action">
+            <span class="login-hint" id="loginHint">瀏覽菜單免登入，送出訂單需先登入</span>
+            <button class="button button-primary order-button" id="submitOrder" type="button" disabled>送出訂單</button>
+        </div>
+    </div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
     const menu = new Map();
     const money = value => new Intl.NumberFormat('zh-TW').format(value);
+    const hasSession = () => Boolean(localStorage.getItem('accessToken') && localStorage.getItem('refreshToken'));
 
     function authHeaders(json = false) {
         const accessToken = localStorage.getItem('accessToken');
         const refreshToken = localStorage.getItem('refreshToken');
-        if (!accessToken || !refreshToken) {
-            window.location.href = '/page/login';
-            throw new Error('請先登入');
-        }
+        if (!accessToken || !refreshToken) throw new Error('請先登入後再送出訂單。');
         return {
             ...(json ? { 'Content-Type': 'application/json' } : {}),
             Authorization: `Bearer ${accessToken}`,
@@ -67,90 +188,171 @@
         if (refresh) localStorage.setItem('refreshToken', refresh);
     }
 
-    async function api(url, options = {}) {
-        const response = await fetch(url, { ...options, headers: { ...authHeaders(Boolean(options.body)), ...options.headers } });
+    async function api(url, options = {}, requiresAuth = false) {
+        const headers = { ...options.headers };
+        if (options.body) headers['Content-Type'] = 'application/json';
+        if (requiresAuth) Object.assign(headers, authHeaders(Boolean(options.body)));
+        const response = await fetch(url, { ...options, headers });
         saveRenewedTokens(response);
         const data = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(data.message || '載入失敗，請稍後再試');
         return data;
     }
 
+    function showToast(message) {
+        const toast = document.querySelector('#toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
     function updateTotal() {
         let total = 0;
+        let count = 0;
         document.querySelectorAll('.quantity-input').forEach(input => {
-            total += (menu.get(Number(input.dataset.id)).price * (Number(input.value) || 0));
+            const quantity = Number(input.value) || 0;
+            const item = menu.get(Number(input.dataset.id));
+            if (item) total += item.price * quantity;
+            count += quantity;
         });
         document.querySelector('#total').textContent = money(total);
+        document.querySelector('#orderCount').textContent = count ? `已選 ${count} 份餐點` : '尚未選擇餐點';
+        document.querySelector('#submitOrder').disabled = count === 0;
+        saveCart();
+    }
+
+    function saveCart() {
+        const cart = [...document.querySelectorAll('.quantity-input')]
+            .map(input => [input.dataset.id, Number(input.value) || 0])
+            .filter(([, quantity]) => quantity > 0);
+        sessionStorage.setItem('breakfastCart', JSON.stringify(cart));
+    }
+
+    function restoreCart() {
+        try {
+            const cart = new Map(JSON.parse(sessionStorage.getItem('breakfastCart') || '[]'));
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.value = Math.min(99, Math.max(0, Number(cart.get(input.dataset.id)) || 0));
+            });
+        } catch { sessionStorage.removeItem('breakfastCart'); }
+        updateTotal();
+    }
+
+    function changeQuantity(input, delta) {
+        input.value = Math.min(99, Math.max(0, (Number(input.value) || 0) + delta));
+        updateTotal();
     }
 
     function renderMenu(items) {
-        const body = document.querySelector('#menuBody');
-        body.replaceChildren();
+        const grid = document.querySelector('#menuGrid');
+        grid.replaceChildren();
+        menu.clear();
         items.forEach(item => {
             menu.set(item.id, item);
-            const row = document.createElement('tr');
-            const name = document.createElement('td'); name.textContent = item.name;
-            const description = document.createElement('td'); description.className = 'description'; description.textContent = item.description || '';
-            const price = document.createElement('td'); price.className = 'price'; price.textContent = `NT$ ${money(item.price)}`;
-            const imgCell = document.createElement('td');
-            const img = document.createElement('img');
-            if (item.imageUrl) img.src = `/images/${encodeURIComponent(item.imageUrl)}`;
-            img.alt = item.name;
-            img.style.width = '80px';
-            img.style.height = '60px';
-            img.style.objectFit = 'cover';
-            img.style.borderRadius = '6px';
-            imgCell.append(img);
-            const quantityCell = document.createElement('td'); quantityCell.className = 'quantity';
-            const quantity = document.createElement('input'); quantity.type = 'number'; quantity.min = '0'; quantity.max = '99'; quantity.value = '0';
+            const card = document.createElement('article');
+            card.className = 'menu-card';
+            const imageWrap = document.createElement('div'); imageWrap.className = 'menu-image-wrap';
+            const fallback = document.createElement('span'); fallback.className = 'image-fallback'; fallback.setAttribute('aria-hidden', 'true'); fallback.textContent = '🍳';
+            const image = document.createElement('img'); image.className = 'menu-image'; image.alt = item.name; image.loading = 'lazy';
+            if (item.imageUrl) image.src = `/images/${encodeURIComponent(item.imageUrl)}`;
+            image.addEventListener('error', () => { image.hidden = true; });
+            imageWrap.append(fallback, image);
+
+            const content = document.createElement('div'); content.className = 'menu-card-content';
+            const top = document.createElement('div'); top.className = 'menu-card-top';
+            const name = document.createElement('h3'); name.className = 'menu-name'; name.textContent = item.name;
+            const price = document.createElement('span'); price.className = 'menu-price'; price.textContent = `NT$ ${money(item.price)}`;
+            top.append(name, price);
+            const description = document.createElement('p'); description.className = 'menu-description'; description.textContent = item.description || '簡單美味，開啟元氣的一天。';
+            const footer = document.createElement('div'); footer.className = 'card-footer';
+            const choose = document.createElement('span'); choose.className = 'choose-label'; choose.textContent = '選擇數量';
+            const quantityControl = document.createElement('div'); quantityControl.className = 'quantity-control';
+            const quantity = document.createElement('input'); quantity.type = 'number'; quantity.min = '0'; quantity.max = '99'; quantity.step = '1'; quantity.value = '0';
             quantity.className = 'quantity-input'; quantity.dataset.id = item.id; quantity.setAttribute('aria-label', `${item.name}數量`);
-            quantity.addEventListener('input', () => { if (Number(quantity.value) > 99) quantity.value = '99'; updateTotal(); });
-            quantityCell.append(quantity);
-            row.append(imgCell, name, description, price, quantityCell);
-            body.append(row);
+            const decrease = document.createElement('button'); decrease.type = 'button'; decrease.className = 'quantity-button'; decrease.textContent = '−'; decrease.setAttribute('aria-label', `減少${item.name}`);
+            const increase = document.createElement('button'); increase.type = 'button'; increase.className = 'quantity-button'; increase.textContent = '+'; increase.setAttribute('aria-label', `增加${item.name}`);
+            decrease.addEventListener('click', () => changeQuantity(quantity, -1));
+            increase.addEventListener('click', () => changeQuantity(quantity, 1));
+            quantity.addEventListener('input', () => { quantity.value = Math.floor(Math.min(99, Math.max(0, Number(quantity.value) || 0))); updateTotal(); });
+            quantityControl.append(decrease, quantity, increase);
+            footer.append(choose, quantityControl);
+            content.append(top, description, footer);
+            card.append(imageWrap, content);
+            grid.append(card);
         });
+
         document.querySelector('#message').hidden = true;
-        document.querySelector('#menuTable').hidden = items.length === 0;
-        document.querySelector('#checkout').hidden = items.length === 0;
-        if (!items.length) { const message = document.querySelector('#message'); message.textContent = '目前沒有供應中的餐點。'; message.hidden = false; }
+        document.querySelector('#retryButton').hidden = true;
+        grid.hidden = items.length === 0;
+        document.querySelector('#menuCount').textContent = `${items.length} 款早餐，現點現做`;
+        if (!items.length) {
+            const message = document.querySelector('#message');
+            message.innerHTML = '<span class="message-icon" aria-hidden="true">☕</span>今天的菜單正在準備中，請稍後再來看看。';
+            message.hidden = false;
+        }
+        restoreCart();
     }
 
     async function loadMenu() {
+        const message = document.querySelector('#message');
+        const grid = document.querySelector('#menuGrid');
+        const retry = document.querySelector('#retryButton');
+        message.classList.remove('error');
+        message.innerHTML = '<span class="message-icon" aria-hidden="true">🥣</span>正在載入今日菜單…';
+        message.hidden = false; grid.hidden = true; retry.hidden = true;
         try { renderMenu(await api('/api/menu')); }
-        catch (error) { const message = document.querySelector('#message'); message.textContent = error.message; message.classList.add('error'); }
+        catch (error) {
+            const icon = document.createElement('span'); icon.className = 'message-icon'; icon.setAttribute('aria-hidden', 'true'); icon.textContent = '🌱';
+            message.replaceChildren(icon, document.createTextNode(error.message));
+            message.classList.add('error'); message.hidden = false; retry.hidden = false;
+            document.querySelector('#menuCount').textContent = '菜單暫時無法載入';
+        }
     }
 
     document.querySelector('#submitOrder').addEventListener('click', async event => {
-        const button = event.currentTarget;
         const items = [...document.querySelectorAll('.quantity-input')]
             .map(input => ({ menuItemId: Number(input.dataset.id), quantity: Number(input.value) || 0 }))
             .filter(item => item.quantity > 0);
-        const result = document.querySelector('#result');
-        if (!items.length) { result.textContent = '請先選擇餐點數量。'; result.classList.add('error'); result.hidden = false; return; }
-        button.disabled = true;
-        result.hidden = true;
+        if (!items.length) return;
+        if (!hasSession()) {
+            saveCart();
+            window.location.href = '/page/login';
+            return;
+        }
+
+        const button = event.currentTarget;
+        button.disabled = true; button.textContent = '送出中…';
         try {
-            const order = await api('/api/orders', { method: 'POST', body: JSON.stringify({ items }) });
-            result.textContent = `${order.message || '訂購成功'}，訂單編號：${order.orderNumber}，總金額：NT$ ${money(order.totalAmount)}，狀態：${order.status}`;
-            result.classList.remove('error');
-            document.querySelectorAll('.quantity-input').forEach(input => input.value = '0');
+            const order = await api('/api/orders', { method: 'POST', body: JSON.stringify({ items }) }, true);
+            showToast(`${order.message || '訂購成功'}！訂單編號 ${order.orderNumber}，共 NT$ ${money(order.totalAmount)}`);
+            document.querySelectorAll('.quantity-input').forEach(input => { input.value = '0'; });
+            sessionStorage.removeItem('breakfastCart');
             updateTotal();
-        } catch (error) { result.textContent = error.message; result.classList.add('error'); }
-        finally { result.hidden = false; button.disabled = false; }
+        } catch (error) {
+            showToast(error.message);
+            if (/登入/.test(error.message)) window.location.href = '/page/login';
+        } finally { button.disabled = false; button.textContent = '送出訂單'; }
     });
 
-    document.querySelector('#logoutButton').addEventListener('click', async () => {
-        const refreshToken = localStorage.getItem('refreshToken');
+    document.querySelector('#authButton').addEventListener('click', async event => {
+        if (!hasSession()) { window.location.href = '/page/login'; return; }
+        const button = event.currentTarget;
+        button.disabled = true;
         try {
-            if (refreshToken) await fetch('/members/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken }) });
+            const refreshToken = localStorage.getItem('refreshToken');
+            await fetch('/members/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken }) });
         } finally {
             localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken');
+            sessionStorage.removeItem('breakfastCart');
             window.location.href = '/page/login';
         }
     });
 
+    document.querySelector('#retryButton').addEventListener('click', loadMenu);
+    document.querySelector('#authButton').textContent = hasSession() ? '登出' : '登入';
+    document.querySelector('#submitOrder').textContent = hasSession() ? '送出訂單' : '登入並點餐';
     loadMenu();
 </script>
 </body>
 </html>
-

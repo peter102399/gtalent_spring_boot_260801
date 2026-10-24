@@ -1,4 +1,4 @@
-ALTER TABLE menu_items ADD COLUMN image_url VARCHAR(255) NULL;
+ALTER TABLE menu_items ADD COLUMN image_url VARCHAR(255);
 
 UPDATE menu_items SET image_url = 'toast.jpg' WHERE id = 1;
 UPDATE menu_items SET image_url = 'soy_milk.jpg' WHERE id = 2;
