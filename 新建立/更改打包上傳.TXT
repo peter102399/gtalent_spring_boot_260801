@@ -51,3 +51,12 @@ app.jar.bak-年月日-時分秒
 - 打包或上傳失敗時，指令會停止，不會繼續替換 AWS 上的 JAR。
 - 此流程只上傳本機打包出的 JAR，不會推送或修改 Git。
 - 不要把 SSH 私鑰檔案傳給他人或上傳到 Git。
+
+
+curl.exe -v \
+  -F "file=@c:\Users\user\OneDrive\桌面\test.xlsx" \
+  http://localhost:8080/excel/import
+
+  c:\Users\user\OneDrive\桌面\test.xlsx
+
+  curl.exe -v -F "file=@C:\Users\user\OneDrive\桌面\test.xlsx" http://localhost:8080/excel/import
