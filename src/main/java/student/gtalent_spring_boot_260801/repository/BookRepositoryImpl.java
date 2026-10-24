@@ -1,213 +1,84 @@
 package student.gtalent_spring_boot_260801.repository;
 
-import org.springframework.transaction.PlatformTransactionManager;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import student.gtalent_spring_boot_260801.constant.ResponseMessages;
 import student.gtalent_spring_boot_260801.entity.Book;
-import student.gtalent_spring_boot_260801.exception.ResourceNotFoundException;
-
-import org.springframework.stereotype.Repository;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-import java.time.LocalDateTime;
 
 @Repository
+@Transactional
 public class BookRepositoryImpl implements BookRepository {
 
-    // EntityManager 是 JPA 操作資料庫的核心工具，可以查詢、新增、更新、刪除 Entity。
-    // @PersistenceContext 會請 Spring / JPA 注入目前 persistence context 對應的 EntityManager。
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final PlatformTransactionManager transactionManager;
-
-    public BookRepositoryImpl(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-    }
-
-   @Override
+    @Override
     public List<Book> findAll(int page, int size, String sortBy) {
-        int offset = (page - 1) * size;
-
-        // 核心：根據前端傳來的字串，決定 SQL 的排序語法
-        String orderBySql;
-        switch (sortBy) {
-            case "price_asc":
-                orderBySql = "ORDER BY price ASC";   // 價錢：低 → 高
-                break;
-            case "price_desc":
-                orderBySql = "ORDER BY price DESC";  // 價錢：高 → 低
-                break;
-            case "id_asc":
-            default:
-                orderBySql = "ORDER BY id ASC";      // 預設照 ID 排
-                break;
-        }
-
-        // 1 代表存在，所以要指出status = 1
-        // 🌟 這裡把原本死板的 "ORDER BY id ASC" 換成剛剛決定好的動態變數 "+ orderBySql" 囉！
-        List<?> queryResults = entityManager
-                .createNativeQuery("SELECT * FROM books WHERE status = ? " + orderBySql, Book.class)
-                .setParameter(1, 1)
-                .setFirstResult(offset)
+        String orderBy = switch (sortBy == null ? "id_asc" : sortBy) {
+            case "price_asc" -> "b.price ASC";
+            case "price_desc" -> "b.price DESC";
+            default -> "b.id ASC";
+        };
+        return entityManager.createQuery(
+                "SELECT b FROM Book b WHERE b.status = 1 ORDER BY " + orderBy, Book.class)
+                .setFirstResult(Math.max(0, page - 1) * size)
                 .setMaxResults(size)
                 .getResultList();
-
-        List<Book> books = new ArrayList<>();
-        for (Object obj : queryResults) {
-            books.add((Book) obj);
-        }
-
-        return books;
     }
+
     @Override
     public Book findOneById(Long id) {
-        // 1代表存在, 所以要抓出status = 1
-        Object queryResult =  entityManager
-                                .createNativeQuery("SELECT * FROM books WHERE status = ? and id = ?", Book.class)
-                                .setParameter(1, 1)
-                                .setParameter(2, id)
-                                .getSingleResult();
-
-        return (Book) queryResult;
+        return entityManager.createQuery(
+                "SELECT b FROM Book b WHERE b.id = :id AND b.status = 1", Book.class)
+                .setParameter("id", id)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
     public List<Book> findOneByName(String name) {
-        // 1代表存在, 所以要抓出status = 1
-        // SELECT * FROM books WHERE status = ? and name like '%?%';
-        List<?> queryResults =  entityManager
-                                .createNativeQuery("SELECT * FROM books WHERE status = ? and name like ?", Book.class)
-                                .setParameter(1, 1)
-                                .setParameter(2, "%" + name + "%")
-                                .getResultList();
-
-        List<Book> books = new ArrayList<>();                        
-        for(Object obj : queryResults) {
-            books.add((Book) obj);
-        }
-
-        return books;
+        return entityManager.createQuery(
+                "SELECT b FROM Book b WHERE b.status = 1 AND b.name LIKE :name", Book.class)
+                .setParameter("name", "%" + name + "%")
+                .getResultList();
     }
 
     @Override
     public long countAll() {
-        Object queryResult =  entityManager
-                                .createNativeQuery("SELECT COUNT(*) FROM books WHERE status = ?")
-                                .setParameter(1, 1)
-                                .getSingleResult();
-        // 轉成long (因為取得的是Object, 所以必須要用Class型別去接:Number, int是基本的型別:無法承接Object)
-        return ((Number) queryResult).longValue();
+        return entityManager.createQuery(
+                "SELECT COUNT(b) FROM Book b WHERE b.status = 1", Long.class)
+                .getSingleResult();
     }
 
     @Override
     public Book create(Book book) {
-        // 確保交易能夠成功 => 如果新增書籍失敗，會回滾交易，避免資料庫出現不一致的狀態。   
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-
-        try {
-            // 使用 EntityManager 的 persist 方法將書籍新增到資料庫。
-            entityManager.persist(book);
-            // 交易成功 所以用commit 提交交易，將資料寫入資料庫。
-            transactionManager.commit(status);
-            return book;
-        } catch (RuntimeException exception) {
-            // 失敗 rollback：只要 create 過程出錯，就把這次 transaction 做過的資料庫操作取消。
-            transactionManager.rollback(status);
-
-            // 5. 統一丟資料寫入失敗，讓 GlobalExceptionHandler 判斷資料庫細項錯誤。
-            throw new DataIntegrityViolationException(
-                    ResponseMessages.getMessage(ResponseMessages.DATABASE_WRITE_FAILED),
-                    exception
-            );
-        }
-        
+        entityManager.persist(book);
+        return book;
     }
 
     @Override
     public Book update(Long id, Book book) {
-        // 確保交易能夠成功 => 如果新增書籍失敗，會回滾交易，避免資料庫出現不一致的狀態。   
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        Byte off = 0;
-        try {
-            // 先查詢資料庫中是否存在該書籍，如果不存在，則拋出例外。
-            Book existingBook = entityManager.find(Book.class, id);
-            if (existingBook == null) {
-                throw new ResourceNotFoundException("book", ResponseMessages.BOOK_NOT_FOUND);
-            }
-
-            if(existingBook.getStatus() == off) {
-                throw new ResourceNotFoundException("book", ResponseMessages.BOOK_NOT_FOUND);
-            }
-
-            existingBook.setName(book.getName());
-            existingBook.setPrice(book.getPrice());
-            // 交易成功 所以用commit 提交交易，將資料寫入資料庫。
-            transactionManager.commit(status);
-            return book;
-        } catch (ResourceNotFoundException exception) {
-            // 失敗 rollback：只要 update 過程出錯，就把這次 transaction 做過的資料庫操作取消。
-            transactionManager.rollback(status);
-
-            // 查不到資料不是資料庫寫入失敗，所以原樣丟出去，讓 GlobalExceptionHandler 回 400。
-            throw exception;
-        } catch (RuntimeException exception) {
-            // 失敗 rollback：只要 create 過程出錯，就把這次 transaction 做過的資料庫操作取消。
-            transactionManager.rollback(status);
-
-            // 統一丟資料寫入失敗，讓 GlobalExceptionHandler 判斷資料庫細項錯誤。
-            throw new DataIntegrityViolationException(
-                    ResponseMessages.getMessage(ResponseMessages.DATABASE_WRITE_FAILED),
-                    exception
-            );
+        Book existing = entityManager.find(Book.class, id);
+        if (existing == null || existing.getStatus() == 0) {
+            return null;
         }
+        existing.setName(book.getName());
+        existing.setPrice(book.getPrice());
+        return existing;
     }
 
     @Override
     public void delete(Long id) {
-        // 確保交易能夠成功 => 如果刪除書籍失敗，會回滾交易，避免資料庫出現不一致的狀態。   
-        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
-        Byte off = 0;
-        try {
-            // 先查詢資料庫中是否存在該書籍，如果不存在，則拋出例外。
-            Book existingBook = entityManager.find(Book.class, id);
-            if (existingBook == null) {
-                throw new ResourceNotFoundException("book", ResponseMessages.BOOK_NOT_FOUND);
-            }
-
-            if(existingBook.getStatus() == off) {
-                throw new ResourceNotFoundException("book", ResponseMessages.BOOK_NOT_FOUND);
-            }
-
-            existingBook.setStatus(off);
-            existingBook.setDeletedAt(LocalDateTime.now());
-            // 交易成功 所以用commit 提交交易，將資料寫入資料庫。
-            transactionManager.commit(status);
-        } catch (ResourceNotFoundException exception) {
-            // 失敗 rollback：只要 update 過程出錯，就把這次 transaction 做過的資料庫操作取消。
-            transactionManager.rollback(status);
-
-            // 查不到資料不是資料庫寫入失敗，所以原樣丟出去，讓 GlobalExceptionHandler 回 400。
-            throw exception;
-        } catch (RuntimeException exception) {
-            // 失敗 rollback：只要 create 過程出錯，就把這次 transaction 做過的資料庫操作取消。
-            transactionManager.rollback(status);
-
-            // 統一丟資料寫入失敗，讓 GlobalExceptionHandler 判斷資料庫細項錯誤。
-            throw new DataIntegrityViolationException(
-                    ResponseMessages.getMessage(ResponseMessages.DATABASE_WRITE_FAILED),
-                    exception
-            );
+        Book existing = entityManager.find(Book.class, id);
+        if (existing != null && existing.getStatus() == 1) {
+            existing.setStatus((byte) 0);
+            existing.setDeletedAt(LocalDateTime.now());
         }
     }
-
-    
 }

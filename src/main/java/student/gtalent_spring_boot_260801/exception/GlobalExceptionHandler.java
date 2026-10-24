@@ -23,7 +23,6 @@ import java.util.TreeMap;
 public class GlobalExceptionHandler {
 
     // 處理 @Valid 驗證失敗，把欄位錯誤訊息合併成統一的 message。
-    // 例如 BookCreateRequest 的 name 或 price 不合法時，Spring 會丟 MethodArgumentNotValidException。
     @ExceptionHandler(MethodArgumentNotValidException.class)
     // request 格式正確，但是欄位內容不符合規則，所以回 422。
     @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
@@ -54,7 +53,6 @@ public class GlobalExceptionHandler {
         return new ApiResponse(ResponseMessages.getMessage(ResponseMessages.DATABASE_WRITE_FAILED));
     }
 
-    // 處理 API 路徑不存在，例如使用者呼叫 /bookssss。
     @ExceptionHandler({
             NoHandlerFoundException.class,
             NoResourceFoundException.class
@@ -81,7 +79,6 @@ public class GlobalExceptionHandler {
         return new ApiResponse(ResponseMessages.getMessage(ResponseMessages.HTTP_REQUEST_FAILED));
     }
 
-    // 處理查不到指定資料，例如 GET /books/999 或 PUT /books/999。
     @ExceptionHandler(ResourceNotFoundException.class)
     // API 路徑存在，但是 request 指定的資料不存在，所以這裡依專案規則回 400。
     @ResponseStatus(HttpStatus.BAD_REQUEST)

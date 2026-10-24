@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>早餐菜單</title>
+    <style>
+        :root { font-family: Arial, "Noto Sans TC", sans-serif; color: #1f2933; background: #f4f6f8; }
+        body { margin: 0; }
+        header { background: white; border-bottom: 1px solid #d9e2ec; }
+        .bar, main { width: min(900px, calc(100% - 32px)); margin: auto; }
+        .bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; }
+        h1 { margin: 0; font-size: 24px; }
+        main { margin: 28px auto; background: white; border: 1px solid #d9e2ec; border-radius: 10px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid #edf2f7; text-align: left; }
+        th { background: #f8fafc; color: #52606d; }
+        .price, .quantity { text-align: right; }
+        input[type=number] { width: 72px; padding: 8px; border: 1px solid #bcccdc; border-radius: 6px; }
+        button { padding: 10px 14px; border: 1px solid #bcccdc; border-radius: 6px; background: white; font-weight: 700; cursor: pointer; }
+        button.primary { background: #176b52; color: white; border-color: #176b52; }
+        button:disabled { opacity: .55; cursor: wait; }
+        .message { padding: 22px; text-align: center; color: #627d98; }
+        .error { color: #9b1c1c; }
+        .checkout { padding: 18px; display: flex; justify-content: flex-end; align-items: center; gap: 16px; flex-wrap: wrap; }
+        #result { margin: 0 18px 18px; padding: 14px; border-radius: 6px; background: #edf7f2; }
+        #result.error { background: #fff1f0; }
+        @media (max-width: 600px) { th, td { padding: 10px 8px; } .description { display: none; } }
+    </style>
+</head>
+<body>
+<header><div class="bar"><h1>早餐菜單</h1><button id="logoutButton" type="button">登出</button></div></header>
+<main>
+    <div id="message" class="message">正在載入菜單…</div>
+    <table id="menuTable" hidden>
+        <thead><tr><th></th><th class="th-name">品項</th><th class="th-description">說明</th><th class="price">價格</th><th class="quantity">數量</th></tr></thead>
+        <tbody id="menuBody"></tbody>
+    </table>
+    <div class="checkout" id="checkout" hidden>
+        <strong>總計：NT$ <span id="total">0</span></strong>
+        <button class="primary" id="submitOrder" type="button">送出訂單</button>
+    </div>
+    <div id="result" hidden aria-live="polite"></div>
+</main>
+<script>
+    const menu = new Map();
+    const money = value => new Intl.NumberFormat('zh-TW').format(value);
+
+    function authHeaders(json = false) {
+        const accessToken = localStorage.getItem('accessToken');
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!accessToken || !refreshToken) {
+            window.location.href = '/page/login';
+            throw new Error('請先登入');
+        }
+        return {
+            ...(json ? { 'Content-Type': 'application/json' } : {}),
+            Authorization: `Bearer ${accessToken}`,
+            'X-Refresh-Token': refreshToken
+        };
+    }
+
+    function saveRenewedTokens(response) {
+        const access = response.headers.get('X-New-Access-Token');
+        const refresh = response.headers.get('X-New-Refresh-Token');
+        if (access) localStorage.setItem('accessToken', access);
+        if (refresh) localStorage.setItem('refreshToken', refresh);
+    }
+
+    async function api(url, options = {}) {
+        const response = await fetch(url, { ...options, headers: { ...authHeaders(Boolean(options.body)), ...options.headers } });
+        saveRenewedTokens(response);
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.message || '載入失敗，請稍後再試');
+        return data;
+    }
+
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            total += (menu.get(Number(input.dataset.id)).price * (Number(input.value) || 0));
+        });
+        document.querySelector('#total').textContent = money(total);
+    }
+
+    function renderMenu(items) {
+        const body = document.querySelector('#menuBody');
+        body.replaceChildren();
+        items.forEach(item => {
+            menu.set(item.id, item);
+            const row = document.createElement('tr');
+            const name = document.createElement('td'); name.textContent = item.name;
+            const description = document.createElement('td'); description.className = 'description'; description.textContent = item.description || '';
+            const price = document.createElement('td'); price.className = 'price'; price.textContent = `NT$ ${money(item.price)}`;
+            const imgCell = document.createElement('td');
+            const img = document.createElement('img');
+            if (item.imageUrl) img.src = `/images/${encodeURIComponent(item.imageUrl)}`;
+            img.alt = item.name;
+            img.style.width = '80px';
+            img.style.height = '60px';
+            img.style.objectFit = 'cover';
+            img.style.borderRadius = '6px';
+            imgCell.append(img);
+            const quantityCell = document.createElement('td'); quantityCell.className = 'quantity';
+            const quantity = document.createElement('input'); quantity.type = 'number'; quantity.min = '0'; quantity.max = '99'; quantity.value = '0';
+            quantity.className = 'quantity-input'; quantity.dataset.id = item.id; quantity.setAttribute('aria-label', `${item.name}數量`);
+            quantity.addEventListener('input', () => { if (Number(quantity.value) > 99) quantity.value = '99'; updateTotal(); });
+            quantityCell.append(quantity);
+            row.append(imgCell, name, description, price, quantityCell);
+            body.append(row);
+        });
+        document.querySelector('#message').hidden = true;
+        document.querySelector('#menuTable').hidden = items.length === 0;
+        document.querySelector('#checkout').hidden = items.length === 0;
+        if (!items.length) { const message = document.querySelector('#message'); message.textContent = '目前沒有供應中的餐點。'; message.hidden = false; }
+    }
+
+    async function loadMenu() {
+        try { renderMenu(await api('/api/menu')); }
+        catch (error) { const message = document.querySelector('#message'); message.textContent = error.message; message.classList.add('error'); }
+    }
+
+    document.querySelector('#submitOrder').addEventListener('click', async event => {
+        const button = event.currentTarget;
+        const items = [...document.querySelectorAll('.quantity-input')]
+            .map(input => ({ menuItemId: Number(input.dataset.id), quantity: Number(input.value) || 0 }))
+            .filter(item => item.quantity > 0);
+        const result = document.querySelector('#result');
+        if (!items.length) { result.textContent = '請先選擇餐點數量。'; result.classList.add('error'); result.hidden = false; return; }
+        button.disabled = true;
+        result.hidden = true;
+        try {
+            const order = await api('/api/orders', { method: 'POST', body: JSON.stringify({ items }) });
+            result.textContent = `${order.message || '訂購成功'}，訂單編號：${order.orderNumber}，總金額：NT$ ${money(order.totalAmount)}，狀態：${order.status}`;
+            result.classList.remove('error');
+            document.querySelectorAll('.quantity-input').forEach(input => input.value = '0');
+            updateTotal();
+        } catch (error) { result.textContent = error.message; result.classList.add('error'); }
+        finally { result.hidden = false; button.disabled = false; }
+    });
+
+    document.querySelector('#logoutButton').addEventListener('click', async () => {
+        const refreshToken = localStorage.getItem('refreshToken');
+        try {
+            if (refreshToken) await fetch('/members/logout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ refreshToken }) });
+        } finally {
+            localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken');
+            window.location.href = '/page/login';
+        }
+    });
+
+    loadMenu();
+</script>
+</body>
+</html>
+

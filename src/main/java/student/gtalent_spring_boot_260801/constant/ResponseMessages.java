@@ -13,9 +13,6 @@ public final class ResponseMessages {
 
     // 10000 區間：request validation 相關錯誤。錯誤碼用數字字串，因為 validation annotation 的 message 只能放 String。
     public static final String VALIDATION_FAILED        = "10000"; // validation 大項目錯誤。
-    public static final String BOOK_NAME_REQUIRED       = "10001"; // 書名未填。
-    public static final String BOOK_PRICE_REQUIRED      = "10002"; // 價格未填。
-    public static final String BOOK_PRICE_MIN           = "10003"; // 價格小於允許的最小值。
     public static final String MAIL_ADDRESS_REQUIRED    = "10004"; // email 未填。
     public static final String MAIL_ADDRESS_INVALID     = "10005"; // email 格式錯誤。
     public static final String MAIL_SUBJECT_REQUIRED    = "10006"; // 信件標題未填。
@@ -48,7 +45,7 @@ public final class ResponseMessages {
     public static final String NOT_FOUND                = "30002"; // API 路徑不存在。
     public static final String RESOURCE_NOT_FOUND       = "30003"; // 資料不存在。
 
-    public static final String BOOK_NOT_FOUND           = "40001"; // 找不到書籍。
+    public static final String BOOK_NOT_FOUND           = "40001";
     public static final String MEMBER_NOT_FOUND         = "40002"; // 找不到會員。
     public static final String MEMBER_LOGIN_FAILED      = "40003"; // 會員登入失敗。
     public static final String TOKEN_INVALID            = "40004"; // token 不合法。
@@ -68,9 +65,6 @@ public final class ResponseMessages {
         messages.put(UPDATE_SUCCESS,        "修改成功");
         messages.put(DELETE_SUCCESS,        "刪除成功");
         messages.put(VALIDATION_FAILED,     "資料驗證失敗");
-        messages.put(BOOK_NAME_REQUIRED,    "書名必填");
-        messages.put(BOOK_PRICE_REQUIRED,   "價格必填");
-        messages.put(BOOK_PRICE_MIN,        "價格必須大於等於 1");
         messages.put(MAIL_ADDRESS_REQUIRED, "email 必填");
         messages.put(MAIL_ADDRESS_INVALID,  "email 格式錯誤");
         messages.put(MAIL_SUBJECT_REQUIRED, "信件標題必填");

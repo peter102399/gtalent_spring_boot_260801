@@ -116,7 +116,7 @@
             success: function (data) {
                 localStorage.setItem("accessToken", data.accessToken);
                 localStorage.setItem("refreshToken", data.refreshToken);
-                window.location.href = "/page/books";
+                window.location.href = "/page/menu";
             },
             error: function (xhr) {
                 const data = xhr.responseJSON || {};
