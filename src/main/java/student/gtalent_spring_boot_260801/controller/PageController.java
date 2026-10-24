@@ -21,9 +21,9 @@ public class PageController {
         return "login";
     }
 
-    @GetMapping("/page/books")
-    public String booksPage() {
-        return "books";
+    @GetMapping("/page/menu")
+    public String menuPage() {
+        return "menu";
     }
 
     @GetMapping("/page/forgot-password")

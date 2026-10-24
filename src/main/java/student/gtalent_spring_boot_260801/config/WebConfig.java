@@ -17,13 +17,13 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // members / books 需要登入的 API 統一先經過 AuthInterceptor 檢查 token。
-        // /members/{id} 會額外檢查只能操作自己的會員資料；/books/** 只檢查 token 是否有效。
+        // 會員與訂單 API 先經過 AuthInterceptor 檢查 token。
+        // /members/{id} 會額外檢查只能操作自己的會員資料。
         // register/login/logout 是登入流程本身，所以不做攔截。
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns(
                         "/members/**",
-                        "/books/**"
+                        "/api/orders/**"
                 )
                 .excludePathPatterns(
                         "/members/register",
