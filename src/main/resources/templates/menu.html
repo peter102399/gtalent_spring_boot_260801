@@ -61,6 +61,7 @@
         .menu-name { margin: 0; color: #263a2e; font-size: 16px; font-weight: 800; line-height: 1.45; }
         .menu-price { flex: 0 0 auto; color: var(--green); font-size: 16px; font-weight: 800; }
         .menu-description { min-height: 40px; margin: 7px 0 14px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+        .option-select { width: 100%; margin: 0 0 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; background: white; color: #263a2e; }
         .card-footer { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid #f0ede6; }
         .choose-label { color: #78837b; font-size: 12px; }
         .quantity-control { display: inline-flex; align-items: center; gap: 8px; }
@@ -224,7 +225,7 @@
 
     function saveCart() {
         const cart = [...document.querySelectorAll('.quantity-input')]
-            .map(input => [input.dataset.id, Number(input.value) || 0])
+            .map(input => [input.dataset.id, Number(input.value) || 0, document.querySelector(`.option-select[data-id="${input.dataset.id}"]`)?.value || ''])
             .filter(([, quantity]) => quantity > 0);
         sessionStorage.setItem('breakfastCart', JSON.stringify(cart));
     }
@@ -233,7 +234,10 @@
         try {
             const cart = new Map(JSON.parse(sessionStorage.getItem('breakfastCart') || '[]'));
             document.querySelectorAll('.quantity-input').forEach(input => {
-                input.value = Math.min(99, Math.max(0, Number(cart.get(input.dataset.id)) || 0));
+                const saved = cart.get(input.dataset.id);
+                input.value = Math.min(99, Math.max(0, Number(Array.isArray(saved) ? saved[0] : saved) || 0));
+                const select = document.querySelector(`.option-select[data-id="${input.dataset.id}"]`);
+                if (select && Array.isArray(saved) && [...select.options].some(choice => choice.value === saved[1])) select.value = saved[1];
             });
         } catch { sessionStorage.removeItem('breakfastCart'); }
         updateTotal();
@@ -264,6 +268,20 @@
             const name = document.createElement('h3'); name.className = 'menu-name'; name.textContent = item.name;
             const price = document.createElement('span'); price.className = 'menu-price'; price.textContent = `NT$ ${money(item.price)}`;
             top.append(name, price);
+            const optionGroups = [
+                [/蛋餅/, ['火腿蛋餅', '起司蛋餅', '肉鬆蛋餅']],
+                [/果醬吐司|吐司/, ['草莓', '巧克力', '奶油']],
+                [/漢堡|堡/, ['麥香雞', '里肌豬', '牛肉', '蛋堡']],
+                [/飲料|紅茶|奶茶|牛奶|豆漿/, ['紅茶', '奶茶', '牛奶', '豆漿']]
+            ];
+            const group = optionGroups.find(([pattern]) => pattern.test(item.name));
+            let option;
+            if (group) {
+                option = document.createElement('select'); option.className = 'option-select'; option.dataset.id = item.id;
+                option.setAttribute('aria-label', `${item.name}口味`);
+                group[1].forEach(label => { const choice = document.createElement('option'); choice.value = label; choice.textContent = label; option.append(choice); });
+                option.addEventListener('change', saveCart);
+            }
             const description = document.createElement('p'); description.className = 'menu-description'; description.textContent = item.description || '簡單美味，開啟元氣的一天。';
             const footer = document.createElement('div'); footer.className = 'card-footer';
             const choose = document.createElement('span'); choose.className = 'choose-label'; choose.textContent = '選擇數量';
@@ -277,7 +295,9 @@
             quantity.addEventListener('input', () => { quantity.value = Math.floor(Math.min(99, Math.max(0, Number(quantity.value) || 0))); updateTotal(); });
             quantityControl.append(decrease, quantity, increase);
             footer.append(choose, quantityControl);
-            content.append(top, description, footer);
+            content.append(top, description);
+            if (option) content.append(option);
+            content.append(footer);
             card.append(imageWrap, content);
             grid.append(card);
         });
@@ -312,7 +332,7 @@
 
     document.querySelector('#submitOrder').addEventListener('click', async event => {
         const items = [...document.querySelectorAll('.quantity-input')]
-            .map(input => ({ menuItemId: Number(input.dataset.id), quantity: Number(input.value) || 0 }))
+            .map(input => ({ menuItemId: Number(input.dataset.id), quantity: Number(input.value) || 0, option: document.querySelector(`.option-select[data-id="${input.dataset.id}"]`)?.value || null }))
             .filter(item => item.quantity > 0);
         if (!items.length) return;
         if (!hasSession()) {

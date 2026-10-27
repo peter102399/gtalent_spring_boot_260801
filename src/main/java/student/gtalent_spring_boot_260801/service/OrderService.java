@@ -25,8 +25,10 @@ public class OrderService {
     @Transactional
     public CustomerOrder create(OrderCreateRequest request) {
         Map<Long, Integer> quantities = new LinkedHashMap<>();
+        Map<Long, String> options = new LinkedHashMap<>();
         for (OrderCreateRequest.Item item : request.getItems()) {
             quantities.merge(item.getMenuItemId(), item.getQuantity(), Math::addExact);
+            options.put(item.getMenuItemId(), item.getOption());
         }
 
         List<MenuItem> menuItems = menuRepository.findAvailableByIds(List.copyOf(quantities.keySet()));
@@ -41,7 +43,7 @@ public class OrderService {
 
         CustomerOrder order = new CustomerOrder(UUID.randomUUID().toString(), total);
         for (MenuItem item : menuItems) {
-            order.addItem(new OrderItem(item, quantities.get(item.getId())));
+            order.addItem(new OrderItem(item, quantities.get(item.getId()), options.get(item.getId())));
         }
         entityManager.persist(order);
         return order;

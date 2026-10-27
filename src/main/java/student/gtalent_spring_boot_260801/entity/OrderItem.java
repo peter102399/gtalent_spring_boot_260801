@@ -32,8 +32,12 @@ public class OrderItem {
     protected OrderItem() {}
 
     public OrderItem(MenuItem menuItem, int quantity) {
+        this(menuItem, quantity, null);
+    }
+
+    public OrderItem(MenuItem menuItem, int quantity, String option) {
         this.menuItem = menuItem;
-        this.itemName = menuItem.getName();
+        this.itemName = option == null || option.isBlank() ? menuItem.getName() : menuItem.getName() + "（" + option + "）";
         this.unitPrice = menuItem.getPrice();
         this.quantity = quantity;
         this.subtotal = (long) menuItem.getPrice() * quantity;
