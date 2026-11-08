@@ -103,3 +103,19 @@ line.bot.handler.path=/api/line/webhook
 
 # LINE LIFF
 line.liff.id=${LIFF_ID:}
+
+
+ngrok config add-authtoken xxxx
+
+ngrok config add-authtoken 3LRPyzleOjkGSNz3F5mSJWBPRrz_4WWaCn17pDX7GnoNNJrMw
+
+
+ngrok http 8080 --url=operator-straddle-crazed.ngrok-free.dev
+
+ngrok http --domain=opposing-catcher-oxidation.ngrok-free.dev 8080
+
+ngrok http 8080 --url=operator-straddle-crazed.ngrok-free.dev
+
+https://operator-straddle-crazed.ngrok-free.dev/page/menu
+
+.\ngrok http 8080 --domain=operator-straddle-crazed.ngrok-free.dev
